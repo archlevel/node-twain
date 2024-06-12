@@ -48,8 +48,6 @@ Napi::Function registerTwainSDK(Napi::Env env) {
                     "scan",
                     static_cast<napi_property_attributes>(napi_writable | napi_configurable)
             ),
-            
-            
     });
 
     // Create a persistent reference to the class constructor. This will allow

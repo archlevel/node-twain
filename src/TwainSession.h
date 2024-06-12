@@ -81,7 +81,7 @@ public:
 
     TW_UINT16 getImageInfo();
 
-    TW_UINT16 scan(TW_UINT32 mech, std::string fileName);
+    TW_UINT16 scan(TW_UINT32 mech, std::string fileName,Napi::Env env,Napi::Function jsFunction);
     
     std::string convertImageFileFormatToExt(TW_UINT16 value);
 
@@ -113,7 +113,7 @@ private:
     TW_USERINTERFACE ui;
 
     void transferNative();
-    void transferFile(TW_UINT16 fileFormat,std::string);
+    void transferFile(TW_UINT16 fileFormat,std::string,Napi::Env env,Napi::Function jsFunction);
     void transferMemory();
 
     bool parseCapability(TW_CAPABILITY *pCap, TW_UINT32& val);

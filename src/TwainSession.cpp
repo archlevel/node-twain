@@ -425,7 +425,7 @@ TW_UINT16 TwainSession::getImageInfo() {
     return rc;
 }
 
-TW_UINT16 TwainSession::scan(TW_UINT32 mech, std::string fileName) {
+TW_UINT16 TwainSession::scan(TW_UINT32 mech, std::string fileName,Napi::Env env,Napi::Function jsFunction) {
     if(state != 6) {
         std::cout << "A scan cannot be initiated unless we are in state 6" << std::endl;
         return TWRC_FAILURE;
@@ -449,7 +449,7 @@ TW_UINT16 TwainSession::scan(TW_UINT32 mech, std::string fileName) {
             if( rc == TWRC_SUCCESS){
                 pTW_ONEVALUE pEnum = (pTW_ONEVALUE)lockMemory(cap.hContainer);
                 std::cout << pEnum->Item << std::endl;
-                transferFile(pEnum->Item, fileName);
+                transferFile(pEnum->Item, fileName,env,jsFunction);
             }
             break;
         }
@@ -510,18 +510,18 @@ void TwainSession::transferNative() {
     return;
 }
 
-void TwainSession::transferFile(TW_UINT16 fileFormat, std::string fileName) {
+void TwainSession::transferFile(TW_UINT16 fileFormat, std::string fileName,Napi::Env env,Napi::Function jsFunction) {
     std::cout << "starting a TWSX_FILE transfer..." << std::endl;
     std::string ext = convertImageFileFormatToExt(fileFormat);
     std::cout << ext << std::endl;
-
+    long idx = 1;
     bool bPendingXfers = true;
     TW_UINT16 rc = TWRC_SUCCESS;
     TW_SETUPFILEXFER fileXfer;
     memset(&fileXfer, 0, sizeof(fileXfer));
     std::cout << "Test::" << fileXfer.Format << std::endl;
     fileXfer.Format = fileFormat;
-    strcpy(fileXfer.FileName, (fileName + ext).c_str());
+    strcpy(fileXfer.FileName, (fileName +"_"+std::to_string(idx)+ ext).c_str());
     
 //    TW_STR255 str;
 //    snprintf((char *)fileXfer.FileName, str);
@@ -541,10 +541,13 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string fileName) {
         }
 
         rc = entry(DG_IMAGE, DAT_IMAGEFILEXFER, MSG_GET, NULL, pSource);
-        if (rc == TWRC_XFERDONE) {
+        if (rc == TWRC_XFERDONE) {//单个文件已经扫描完成
             // rc = entry(DG_CONTROL, DAT_SETUPFILEXFER, MSG_GETDEFAULT, (TW_MEMREF) &fileXfer, pSource);
             std::cout << "file saved..." << fileXfer.FileName << std::endl;
             std::cout << "Checking to see if there are more images to transfer..." << std::endl;
+
+            jsFunction.Call({ Napi::String::New(env,fileName +"_"+std::to_string(idx)+ ext) });
+
             TW_PENDINGXFERS pendXfers;
             memset(&pendXfers, 0, sizeof(pendXfers));
             rc = entry(DG_CONTROL, DAT_PENDINGXFERS, MSG_ENDXFER, (TW_MEMREF) &pendXfers, pSource);
@@ -552,6 +555,10 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string fileName) {
             if (rc == TWRC_SUCCESS) {
                 if (pendXfers.Count == 0) {
                     bPendingXfers = false;
+                }
+                else {
+                    idx = idx +1;
+                    strcpy(fileXfer.FileName, (fileName +"_"+std::to_string(idx)+ ext).c_str());
                 }
             } else {
                 std::cerr << "Failed to properly end the transfer" << std::endl;

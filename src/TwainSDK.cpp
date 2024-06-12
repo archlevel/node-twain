@@ -297,50 +297,15 @@ Napi::Value TwainSDK::enableDataSource(const Napi::CallbackInfo &info) {
     }
     return deferred.Promise();
 }
-
 Napi::Value TwainSDK::scan(const Napi::CallbackInfo &info) {
     Napi::Env env = info.Env();
-    std::cout << "参数 长度:" << sizeof(info) << std::endl;
-
     TW_UINT16 transfer = info[0].As<Napi::Number>().Uint32Value();
     std::string fileName = info[1].As<Napi::String>().Utf8Value();
-    
     Napi::Function jsFunction = info[0].As<Napi::Function>();
-    //Napi::Str jsFunction = info[0].As<Napi::Function>();
     session.enableDS();
-
-     TW_UINT16 rc;
-     long idx = 1;
-     TW_CAPABILITY cap;
-     cap.Cap = ICAP_IMAGEFILEFORMAT;
-     cap.hContainer = 0;
-     rc = session.getCurrentCap(cap);
-    
-     pTW_ONEVALUE pEnum = NULL;
-     if (rc == TWRC_SUCCESS) {
-         pTW_ONEVALUE pEnum = (pTW_ONEVALUE)session.lockMemory(cap.hContainer);
-     }
-     std::cout << pEnum->Item << std::endl;
-     
-     std::string ext = session.convertImageFileFormatToExt(pEnum->Item);
-     std::cout << ext << std::endl;
-     std::cout << "starting scan..." << std::endl;
-    do {
-        
-        std::string tmpFileName = fileName +"_" + std::to_string(idx);
-        rc = session.scan(transfer, tmpFileName);
-        jsFunction.Call({ Napi::String::New(env,tmpFileName + ext) });
-        idx++;
-    } while (TWCC_SUCCESS == rc);
-
+    session.scan(transfer, fileName,env,jsFunction);
     session.disableDS();
     return Napi::Boolean::New(env, true);
-}
-
-void scanCallback(std::string fileName,const Napi::CallbackInfo& info) {
-    Napi::Env env = info.Env();
-    Napi::Function cb = info[3].As<Napi::Function>();
-    cb.Call(env.Global(), { Napi::String::New(env,fileName)});
 }
 
 
