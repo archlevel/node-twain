@@ -545,8 +545,9 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string fileName,Napi:
             // rc = entry(DG_CONTROL, DAT_SETUPFILEXFER, MSG_GETDEFAULT, (TW_MEMREF) &fileXfer, pSource);
             std::cout << "file saved..." << fileXfer.FileName << std::endl;
             std::cout << "Checking to see if there are more images to transfer..." << std::endl;
-
-            jsFunction.Call({ Napi::String::New(env,fileName +"_"+std::to_string(idx)+ ext) });
+            if(jsFunction != NULL) {
+                jsFunction.Call({ Napi::String::New(env,fileName +"_"+std::to_string(idx)+ ext) });
+            }
 
             TW_PENDINGXFERS pendXfers;
             memset(&pendXfers, 0, sizeof(pendXfers));

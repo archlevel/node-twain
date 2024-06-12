@@ -301,7 +301,10 @@ Napi::Value TwainSDK::scan(const Napi::CallbackInfo &info) {
     Napi::Env env = info.Env();
     TW_UINT16 transfer = info[0].As<Napi::Number>().Uint32Value();
     std::string fileName = info[1].As<Napi::String>().Utf8Value();
-    Napi::Function jsFunction = info[0].As<Napi::Function>();
+    Napi::Function jsFunction = null;
+    if(info.Length() > 2) {
+        jsFunction = info[2].As<Napi::Function>();
+    }
     session.enableDS();
     session.scan(transfer, fileName,env,jsFunction);
     session.disableDS();
