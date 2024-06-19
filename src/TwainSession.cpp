@@ -280,17 +280,20 @@ TW_UINT16 TwainSession::closeDS() {
 }
 
 TW_UINT16 TwainSession::getCap(TW_CAPABILITY &cap) {
+    // 检查状态是否有效
     if (state < 4) {
         std::cout << "You need to open a data source first." << std::endl;
         return TWCC_SEQERROR;
     }
+    // 如果已经分配了容器，则释放内存
     if (cap.hContainer != NULL) {
         freeMemory(cap.hContainer);
         cap.hContainer = NULL;
     }
-
+    // 设置能力类型为 "不关心"
     cap.ConType = TWON_DONTCARE16;
     TW_UINT16 rc = entry(DG_CONTROL, DAT_CAPABILITY, MSG_GET, (TW_MEMREF) &cap, pSource);
+    // 打印能力的详细信息
     std::cout << "CAP_ORDER:" << convertCapToString(cap.Cap) << std::endl;
     std::cout << "CAP_TYPE :" << convertConTypeToString(cap.ConType) << std::endl;
     return rc;

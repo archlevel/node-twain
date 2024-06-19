@@ -121,6 +121,12 @@ Napi::Value TwainSDK::setCallback(const Napi::CallbackInfo &info) {
 
 Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
     Napi::Env env = info.Env();
+
+    if (info.Length() < 1 || !info[0].IsNumber()) {
+        Napi::TypeError::New(env, "Expected a number").ThrowAsJavaScriptException();
+        return env.Null();
+    }
+
     TW_UINT16 CAP = info[0].As<Napi::Number>().Uint32Value();
 
     TW_CAPABILITY cap;
@@ -151,6 +157,7 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
                 rangeResult.Set("stepSize", Napi::Number::New(env, pRange->StepSize));
                 rangeResult.Set("defaultValue", Napi::Number::New(env, pRange->DefaultValue));
                 rangeResult.Set("currentValue", Napi::Number::New(env, pRange->CurrentValue));
+                break;
 //            case TWTY_FIX32:
 //                rangeResult.Set("minValue", Napi::Number::New(env, fix32ToFloat(pRange->MinValue)));
 //                rangeResult.Set("maxValue", Napi::Number::New(env, fix32ToFloat(pRange->MaxValue)));
@@ -158,6 +165,7 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
 //                rangeResult.Set("defaultValue", Napi::Number::New(env, fix32ToFloat(pRange->DefaultValue)));
 //                rangeResult.Set("currentValue", Napi::Number::New(env, fix32ToFloat(pRange->CurrentValue)));
         }
+        session.unlockMemory(cap.hContainer);
         return rangeResult;
     } else if (cap.ConType == TWON_ARRAY) {
         pTW_ARRAY pArray = (pTW_ARRAY) session.lockMemory(cap.hContainer);
@@ -171,11 +179,14 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
                 case TWTY_UINT16:
                 case TWTY_UINT32:
                     arr[index] = Napi::Number::New(env, pArray->ItemList[index]);
+                    break;
             }
         }
+        session.unlockMemory(cap.hContainer);
         return arr;
     } else if (cap.ConType == TWON_ONEVALUE) {
         pTW_ONEVALUE pOne = (pTW_ONEVALUE) session.lockMemory(cap.hContainer);
+        Napi::Value result;
         switch (pOne->ItemType) {
             case TWTY_INT8:
             case TWTY_INT16:
@@ -183,26 +194,34 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
             case TWTY_UINT8:
             case TWTY_UINT16:
             case TWTY_UINT32:
-                return Napi::Number::New(env, pOne->Item);
+                result = Napi::Number::New(env, pOne->Item);
+                break;
             case TWTY_BOOL:
-                return Napi::Boolean::New(env, pOne->Item);
+                result =  Napi::Boolean::New(env, pOne->Item);
+                break;
             case TWTY_STR32: {
                 pTW_STR32 str32 = ((pTW_STR32) (&pOne->Item));
-                return Napi::String::New(env, reinterpret_cast<char *>(str32));
+                result =  Napi::String::New(env, reinterpret_cast<char *>(str32));
+                break;
             }
             case TWTY_STR64: {
                 pTW_STR64 str64 = ((pTW_STR64) (&pOne->Item));
-                return Napi::String::New(env, reinterpret_cast<char *>(str64));
+                result =  Napi::String::New(env, reinterpret_cast<char *>(str64));
+                break;
             }
             case TWTY_STR128: {
                 pTW_STR128 str128 = ((pTW_STR128) (&pOne->Item));
-                return Napi::String::New(env, reinterpret_cast<char *>(str128));
+                result =  Napi::String::New(env, reinterpret_cast<char *>(str128));
+                break;
             }
             case TWTY_STR255: {
                 pTW_STR255 str255 = ((pTW_STR255) (&pOne->Item));
-                return Napi::String::New(env, reinterpret_cast<char *>(str255));
+                result =  Napi::String::New(env, reinterpret_cast<char *>(str255));
+                break;
             }
         }
+        session.unlockMemory(cap.hContainer);
+        return result;
     } else if (cap.ConType == TWON_ENUMERATION) {
         pTW_ENUMERATION pEnum = (pTW_ENUMERATION) session.lockMemory(cap.hContainer);
         Napi::Object enumResult = Napi::Object::New(env);
@@ -247,6 +266,7 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
         enumResult.Set("currentIndex", pEnum->CurrentIndex);
         enumResult.Set("defaultIndex", pEnum->DefaultIndex);
         enumResult.Set("itemList", list);
+        session.unlockMemory(cap.hContainer);
         return enumResult;
     }
     return Napi::Boolean::New(env, false);
