@@ -259,8 +259,13 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
 
 Napi::Value TwainSDK::setCapability(const Napi::CallbackInfo &info) {
     Napi::Env env = info.Env();
+    if (info.Length() < 3 || !info[0].IsNumber() || !info[1].IsNumber() || !info[2].IsNumber()) {
+        Napi::TypeError::New(env, "Expected three numbers").ThrowAsJavaScriptException();
+        return env.Null();
+    }
     TW_UINT16 CAP = info[0].As<Napi::Number>().Uint32Value();
     TW_UINT16 ITEM_TYPE = info[1].As<Napi::Number>().Uint32Value();
+    TW_UINT32 value = info[2].As<Napi::Number>().Uint32Value();
     TW_HANDLE hResult = NULL;
     switch (ITEM_TYPE) {
         case TWTY_STR32:
@@ -268,21 +273,31 @@ Napi::Value TwainSDK::setCapability(const Napi::CallbackInfo &info) {
         case TWTY_STR128:
         case TWTY_STR255:
             hResult = session.allocMemory(sizeof(TW_ONEVALUE) + session.getTWTypeSize(ITEM_TYPE));
+            break;
         default:
             hResult = session.allocMemory(sizeof(TW_ONEVALUE));
+            break;
     }
 
     pTW_ONEVALUE pOne = (pTW_ONEVALUE) (session.lockMemory(hResult));
     pOne->ItemType = ITEM_TYPE;
+    pOne->Item = value;
     session.unlockMemory(hResult);
-    pOne = NULL;
 
     TW_CAPABILITY cap;
     cap.Cap = CAP;
     cap.ConType = TWON_ONEVALUE;
     cap.hContainer = hResult;
 
-    return Napi::Boolean::New(env, true);
+    TW_UINT16 rc = session.setCap(CAP, value, ITEM_TYPE);
+
+    session.freeMemory(hResult);  // 释放内存
+
+    if (rc == TWRC_SUCCESS) {
+        return Napi::Boolean::New(env, true);
+    } else {
+        return Napi::Boolean::New(env, false);
+    }
 }
 
 Napi::Value TwainSDK::enableDataSource(const Napi::CallbackInfo &info) {
