@@ -99,3 +99,8 @@ npm run test
 ```
 
 This command will search *.test.js, then run the `twain.test.js` script.
+
+4. 开发编译命令
+```
+ node-gyp rebuild
+```

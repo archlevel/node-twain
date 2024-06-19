@@ -88,6 +88,15 @@ TW_UINT16 TwainSession::freeDSM() {
 TW_UINT16 TwainSession::entry(TW_UINT32 DG, TW_UINT16 DAT, TW_UINT16 MSG, TW_MEMREF pData, pTW_IDENTITY pDataSource) {
     TW_UINT16 rc = TWRC_FAILURE;
     status.ConditionCode = TWCC_SUCCESS;
+    /*
+     * TWAIN所有的操作都是通过DSM_Entry()函数来实现的，所以了解该入口函数很有必要
+     * identity //* 指向操作发起者的指针
+     * pDataSource //* 指向目标对象的指针
+     * DG //* Triplets 操作的DG参数 : DG_xxxx
+     * DAT //* Triplets 操作的DAT参数: DAT_xxxx
+     * MSG //* Triplets 操作的MSG参数: MSG_xxxx
+     * pData //* 指向返回数据块的指针
+     */
     rc = dsmEntry(&identity, pDataSource, DG, DAT, MSG, pData);
     std::cout << "Triplet:"
               << convertDataGroupToString(DG)
