@@ -260,7 +260,7 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
 Napi::Value TwainSDK::setCapability(const Napi::CallbackInfo &info) {
     Napi::Env env = info.Env();
     TW_UINT16 CAP = info[0].As<Napi::Number>().Uint32Value();
-    TW_UINT16 ITEM_TYPE = info[0].As<Napi::Number>().Uint32Value();
+    TW_UINT16 ITEM_TYPE = info[1].As<Napi::Number>().Uint32Value();
     TW_HANDLE hResult = NULL;
     switch (ITEM_TYPE) {
         case TWTY_STR32:
