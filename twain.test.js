@@ -120,9 +120,13 @@ describe('quick', () => {
         // session.enableDataSource()
 
         // pSource
-        session.scan(twain.TWSX_FILE, "C:\\Users\\A11200321050133\\Documents\\Scanned Documents\\imageFromScanner")
+        session.scan(twain.TWSX_FILE, "C:\\Users\\A11200321050133\\Documents\\Scanned Documents\\imageFromScanner",(total, left, data) => {
+            console.log('收到回调:',total, left, data);
+        })
 
         
-        session.scan(twain.TWSX_FILE, "C:\\Users\\A11200321050133\\Documents\\Scanned Documents\\imageFromScanner2")
+        session.scan(twain.TWSX_FILE, "C:\\Users\\A11200321050133\\Documents\\Scanned Documents\\imageFromScanner2",(total, left, data) => {
+            console.log('收到回调:',total, left, data);
+        })
     })
 })

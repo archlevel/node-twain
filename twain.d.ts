@@ -605,6 +605,6 @@ declare module "node-twain" {
         getCapability: (capability: number) => Capability;
         setCallback: () => void;
         enableDataSource: () => Promise<void>;
-        scan: (transfer: Number, fileName: string) => void;
+        scan: (transfer: Number, path: string) => void;
     }
 }

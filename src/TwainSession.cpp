@@ -425,7 +425,7 @@ TW_UINT16 TwainSession::getImageInfo() {
     return rc;
 }
 
-TW_UINT16 TwainSession::scan(TW_UINT32 mech, std::string fileName, Napi::Env env, Napi::Function callback) {
+TW_UINT16 TwainSession::scan(TW_UINT32 mech, std::string path, Napi::Env env, Napi::Function callback) {
     if(state != 6) {
         std::cout << "A scan cannot be initiated unless we are in state 6" << std::endl;
         return TWRC_FAILURE;
@@ -449,7 +449,7 @@ TW_UINT16 TwainSession::scan(TW_UINT32 mech, std::string fileName, Napi::Env env
             if( rc == TWRC_SUCCESS){
                 pTW_ONEVALUE pEnum = (pTW_ONEVALUE)lockMemory(cap.hContainer);
                 std::cout << pEnum->Item << std::endl;
-                transferFile(pEnum->Item, fileName,env, callback);
+                transferFile(pEnum->Item, path,env, callback);
             }
             break;
         }
@@ -510,7 +510,7 @@ void TwainSession::transferNative() {
     return;
 }
 
-void TwainSession::transferFile(TW_UINT16 fileFormat, std::string fileName, Napi::Env env, Napi::Function callback) {
+void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::Env env, Napi::Function callback) {
     std::cout << "starting a TWSX_FILE transfer..." << std::endl;
     std::string ext = convertImageFileFormatToExt(fileFormat);
     std::cout << ext << std::endl;
@@ -522,7 +522,7 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string fileName, Napi
     std::cout << "Test::" << fileXfer.Format << std::endl;
     fileXfer.Format = fileFormat;
 
-    strcpy(fileXfer.FileName, (fileName+ +"_" + std::to_string(idx) + ext).c_str());
+    strcpy(fileXfer.FileName, (path+ +"_" + std::to_string(idx) + ext).c_str());
 
     std::cout << "Test::" << "strcpy" << std::endl;
    /*
@@ -568,8 +568,8 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string fileName, Napi
             std::cout << "file saved..." << fileXfer.FileName << std::endl;
             std::cout << "Checking to see if there are more images to transfer..." << std::endl;
 
-            //std::vector<Napi::Value> args{Napi::Number::New(env,total),Napi::Number::New(env,left),Napi::String::New(env,fileName + +"_" + std::to_string(idx) + ext) };
-            callback.Call({ Napi::Number::New(env,total),Napi::Number::New(env,left),Napi::String::New(env,fileName + +"_" + std::to_string(idx) + ext) });
+            //std::vector<Napi::Value> args{Napi::Number::New(env,total),Napi::Number::New(env,left),Napi::String::New(env,path + +"_" + std::to_string(idx) + ext) };
+            callback.Call({ Napi::Number::New(env,total),Napi::Number::New(env,left),Napi::String::New(env,path + +"_" + std::to_string(idx) + ext) });
 
             memset(&pendXfers, 0, sizeof(pendXfers));
             rc = entry(DG_CONTROL, DAT_PENDINGXFERS, MSG_ENDXFER, (TW_MEMREF) &pendXfers, pSource);
@@ -583,7 +583,7 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string fileName, Napi
                 }
                 else {
                     idx = idx + 1;
-                    strcpy(fileXfer.FileName, (total, left, fileName +"_"+std::to_string(idx) + ext).c_str());
+                    strcpy(fileXfer.FileName, (total, left, path +"_"+std::to_string(idx) + ext).c_str());
                 }
             } else {
                 std::cerr << "Failed to properly end the transfer" << std::endl;
