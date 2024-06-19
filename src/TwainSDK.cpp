@@ -69,7 +69,6 @@ Napi::Value TwainSDK::getDataSources(const Napi::CallbackInfo &info) {
 
 Napi::Value TwainSDK::getDefaultSource(const Napi::CallbackInfo &info) {
     Napi::Env env = info.Env();
-
     TW_UINT16 rc = session.getDefaultDS();
     Napi::String str = Napi::String::New(env, "");
     if(rc == TWRC_SUCCESS) {
@@ -297,18 +296,19 @@ Napi::Value TwainSDK::enableDataSource(const Napi::CallbackInfo &info) {
     }
     return deferred.Promise();
 }
+
 Napi::Value TwainSDK::scan(const Napi::CallbackInfo &info) {
+    
     Napi::Env env = info.Env();
     TW_UINT16 transfer = info[0].As<Napi::Number>().Uint32Value();
     std::string fileName = info[1].As<Napi::String>().Utf8Value();
-    Napi::Function jsFunction = null;
-    if(info.Length() > 2) {
-        jsFunction = info[2].As<Napi::Function>();
-    }
+    Napi::Function jsFunction = info[2].As<Napi::Function>();
+
     session.enableDS();
-    session.scan(transfer, fileName,env,jsFunction);
+    session.scan(transfer, fileName, env, jsFunction);
     session.disableDS();
     return Napi::Boolean::New(env, true);
 }
+
 
 
