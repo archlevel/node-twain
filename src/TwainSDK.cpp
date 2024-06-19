@@ -119,11 +119,6 @@ Napi::Value TwainSDK::setCallback(const Napi::CallbackInfo &info) {
     return Napi::Boolean::New(env, true);
 }
 
-Napi::Value TwainSDK::setback(const Napi::CallbackInfo& info) {
-    Napi::Env env = info.Env();
-    return Napi::Number::New(env, 123456);
-}
-
 Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
     Napi::Env env = info.Env();
     TW_UINT16 CAP = info[0].As<Napi::Number>().Uint32Value();

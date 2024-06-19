@@ -30,8 +30,6 @@ public:
 
     virtual Napi::Value setCallback(const Napi::CallbackInfo &info);
 
-    virtual Napi::Value setback(const Napi::CallbackInfo &info);
-
     virtual Napi::Value getCapability(const Napi::CallbackInfo &info);
 
     virtual Napi::Value setCapability(const Napi::CallbackInfo &info);
