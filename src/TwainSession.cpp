@@ -568,7 +568,7 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
             std::cout << "file saved..." << fileXfer.FileName << std::endl;
             std::cout << "Checking to see if there are more images to transfer..." << std::endl;
 
-            //std::vector<Napi::Value> args{Napi::Number::New(env,total),Napi::Number::New(env,left),Napi::String::New(env,path + +"_" + std::to_string(idx) + ext) };
+            //多参数回调
             callback.Call({ Napi::Number::New(env,total),Napi::Number::New(env,left),Napi::String::New(env,path + +"_" + std::to_string(idx) + ext) });
 
             memset(&pendXfers, 0, sizeof(pendXfers));
@@ -578,7 +578,7 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
             if (rc == TWRC_SUCCESS) {
                 if (left == 0) {
                     bPendingXfers = false;//所有结束
-                    //std::vector<Napi::Value> args{ Napi::Number::New(env,total),Napi::Number::New(env,left),Napi::String::New(env,"finish")};
+                    //多参数回调
                     callback.Call({ Napi::Number::New(env,total),Napi::Number::New(env,left),Napi::String::New(env,"finish") });
                 }
                 else {
@@ -594,7 +594,7 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
             std::cerr << "Cancel total" << std::to_string(total) << std::endl;
             std::cerr << "Cancel left" << std::to_string(left) << std::endl;
             std::cerr << "Cancel reason" << "cancel" << std::endl;
-            //std::vector<Napi::Value> args{ Napi::Number::New(env,total),Napi::Number::New(env,left),Napi::String::New(env,"cancel") };
+            //多参数回调
             callback.Call({ Napi::Number::New(env,total),Napi::Number::New(env,left),Napi::String::New(env,"cancel") });
             break;
         } else if (rc == TWRC_FAILURE) {
@@ -602,7 +602,7 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
             std::cerr << "Failed total"<< std::to_string(total) << std::endl;
             std::cerr << "Failed left" << std::to_string(left) << std::endl;
             std::cerr << "Failed reason" << "fail" << std::endl;
-            //std::vector<Napi::Value> args{ Napi::Number::New(env,total),Napi::Number::New(env,left),Napi::String::New(env,"fail") };
+            //多参数回调
             callback.Call({ Napi::Number::New(env,total),Napi::Number::New(env,left),Napi::String::New(env,"fail") });
             break;
         }
