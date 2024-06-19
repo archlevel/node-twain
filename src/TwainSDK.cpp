@@ -265,33 +265,9 @@ Napi::Value TwainSDK::setCapability(const Napi::CallbackInfo &info) {
     }
     TW_UINT16 CAP = info[0].As<Napi::Number>().Uint32Value();
     TW_UINT16 ITEM_TYPE = info[1].As<Napi::Number>().Uint32Value();
-    TW_UINT32 value = info[2].As<Napi::Number>().Uint32Value();
-    TW_HANDLE hResult = NULL;
-    switch (ITEM_TYPE) {
-        case TWTY_STR32:
-        case TWTY_STR64:
-        case TWTY_STR128:
-        case TWTY_STR255:
-            hResult = session.allocMemory(sizeof(TW_ONEVALUE) + session.getTWTypeSize(ITEM_TYPE));
-            break;
-        default:
-            hResult = session.allocMemory(sizeof(TW_ONEVALUE));
-            break;
-    }
-
-    pTW_ONEVALUE pOne = (pTW_ONEVALUE) (session.lockMemory(hResult));
-    pOne->ItemType = ITEM_TYPE;
-    pOne->Item = value;
-    session.unlockMemory(hResult);
-
-    TW_CAPABILITY cap;
-    cap.Cap = CAP;
-    cap.ConType = TWON_ONEVALUE;
-    cap.hContainer = hResult;
+    int value = static_cast<int>(info[2].As<Napi::Number>().Uint32Value());
 
     TW_UINT16 rc = session.setCap(CAP, value, ITEM_TYPE);
-
-    session.freeMemory(hResult);  // 释放内存
 
     if (rc == TWRC_SUCCESS) {
         return Napi::Boolean::New(env, true);
