@@ -324,6 +324,7 @@ TW_UINT16 TwainSession::setCap(TW_UINT16 Cap, TW_UINT16 type,Napi::Value value) 
     cap.hContainer = NULL;
 
     if (value.IsObject()) {
+        std::cout << "setCap IsObject:" << std::endl;
         Napi::Object obj = value.As<Napi::Object>();
         if (type == TWON_ENUMERATION) {
             rc = setEnumerationCap(cap, obj);
@@ -339,6 +340,7 @@ TW_UINT16 TwainSession::setCap(TW_UINT16 Cap, TW_UINT16 type,Napi::Value value) 
             std::cerr << "Unsupported object type" << std::endl;
         }
     } else if (value.IsArray()) {
+            std::cout << "setCap IsObject:" << std::endl;
         rc = setArrayCap(cap, type, value.As<Napi::Array>());
     } else {
         std::cerr << "Unsupported value type" << std::endl;
@@ -352,12 +354,13 @@ TW_UINT16 TwainSession::setCap(TW_UINT16 Cap, TW_UINT16 type,Napi::Value value) 
 }
 
 TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap, Napi::Object obj) {
+    std::cout << "start setEnumerationCap:" << std::endl;
     cap.ConType = TWON_ENUMERATION;
     Napi::Array itemList = obj.Get("itemList").As<Napi::Array>();
     TW_UINT16 itemType = static_cast<TW_UINT16>(obj.Get("itemType").As<Napi::Number>().Uint32Value());
     TW_UINT32 numItems = itemList.Length();
     TW_UINT32 containerSize = sizeof(TW_ENUMERATION) + (numItems - 1) * sizeof(TW_UINT32); // Adjust size as per item type
-
+    std::cout << "start setEnumerationCap:" << std::endl;
     cap.hContainer = allocMemory(containerSize);
     if (cap.hContainer == NULL) {
         return TWRC_FAILURE;
@@ -370,52 +373,47 @@ TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap, Napi::Object obj) 
     pEnum->DefaultIndex = static_cast<TW_UINT32>(obj.Get("defaultIndex").As<Napi::Number>().Uint32Value());
 
     switch (pEnum->ItemType) {
-    case TWTY_INT8:
-      for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
-        //list[index] = ((pTW_INT8)(&pEnum->ItemList))[index];
-        pEnum->ItemList[index] = (TW_INT8)&itemList[index];
-      }
-      break;
-    case TWTY_INT16:
-      for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
-        //list[index] = ((pTW_INT16)(&pEnum->ItemList))[index];
-        pEnum->ItemList[index] = (TW_INT16)&itemList[index];
-      }
-      break;
-    case TWTY_INT32:
-      for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
-        //list[index] = ((pTW_INT32)(&pEnum->ItemList))[index];
-        pEnum->ItemList[index] = (TW_INT32)&itemList[index];
-      }
-      break;
-    case TWTY_UINT8:
-      for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
-        //list[index] = ((pTW_UINT8)(&pEnum->ItemList))[index];
-        pEnum->ItemList[index] = (TW_UINT8)&itemList[index];
-      }
-      break;
-    case TWTY_UINT16:
-      for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
-        //list[index] = ((pTW_UINT16)(&pEnum->ItemList))[index];
-        pEnum->ItemList[index] = (TW_UINT16)&itemList[index];
-      }
-      break;
-    case TWTY_UINT32:
-      for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
-        //list[index] = ((pTW_UINT32)(&pEnum->ItemList))[index];
-        pEnum->ItemList[index] = (TW_UINT32)&itemList[index];
-      }
-      break;
-    case TWTY_BOOL:
-      for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
-        pEnum->ItemList[index] = (TW_BOOL)&itemList[index];
-      }
-      break;
-    }
-
-    for (TW_UINT32 i = 0; i < numItems; ++i) {
-      
-        //pEnum->ItemList[i] = itemList[i].As<Napi::Number>().Uint32Value();
+        case TWTY_INT8:
+          for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
+            //list[index] = ((pTW_INT8)(&pEnum->ItemList))[index];
+            pEnum->ItemList[index] = (TW_INT8)&itemList[index];
+          }
+          break;
+        case TWTY_INT16:
+          for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
+            //list[index] = ((pTW_INT16)(&pEnum->ItemList))[index];
+            pEnum->ItemList[index] = (TW_INT16)&itemList[index];
+          }
+          break;
+        case TWTY_INT32:
+          for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
+            //list[index] = ((pTW_INT32)(&pEnum->ItemList))[index];
+            pEnum->ItemList[index] = (TW_INT32)&itemList[index];
+          }
+          break;
+        case TWTY_UINT8:
+          for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
+            //list[index] = ((pTW_UINT8)(&pEnum->ItemList))[index];
+            pEnum->ItemList[index] = (TW_UINT8)&itemList[index];
+          }
+          break;
+        case TWTY_UINT16:
+          for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
+            //list[index] = ((pTW_UINT16)(&pEnum->ItemList))[index];
+            pEnum->ItemList[index] = (TW_UINT16)&itemList[index];
+          }
+          break;
+        case TWTY_UINT32:
+          for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
+            //list[index] = ((pTW_UINT32)(&pEnum->ItemList))[index];
+            pEnum->ItemList[index] = (TW_UINT32)&itemList[index];
+          }
+          break;
+        case TWTY_BOOL:
+          for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
+            pEnum->ItemList[index] = (TW_BOOL)&itemList[index];
+          }
+          break;
     }
 
     unlockMemory(cap.hContainer);
@@ -424,12 +422,13 @@ TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap, Napi::Object obj) 
 }
 
 TW_UINT16 TwainSession::setRangeCap(TW_CAPABILITY &cap, Napi::Object obj) {
+    std::cout << "start setRangeCap:" << std::endl;
     cap.ConType = TWON_RANGE;
     cap.hContainer = allocMemory(sizeof(TW_RANGE));
     if (cap.hContainer == NULL) {
         return TWRC_FAILURE;
     }
-
+    std::cout << "start lockMemory:" << std::endl;
     pTW_RANGE pRange = (pTW_RANGE) lockMemory(cap.hContainer);
     pRange->ItemType = static_cast<TW_UINT16>(obj.Get("itemType").As<Napi::Number>().Uint32Value());
     pRange->MinValue = obj.Get("minValue").As<Napi::Number>().Uint32Value();
@@ -439,7 +438,7 @@ TW_UINT16 TwainSession::setRangeCap(TW_CAPABILITY &cap, Napi::Object obj) {
     pRange->CurrentValue = obj.Get("currentValue").As<Napi::Number>().Uint32Value();
 
     unlockMemory(cap.hContainer);
-
+    std::cout << "start entry:" << std::endl;
     return entry(DG_CONTROL, DAT_CAPABILITY, MSG_SET, (TW_MEMREF) &cap);
 }
 
