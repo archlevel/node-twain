@@ -505,7 +505,7 @@ TW_UINT16 TwainSession::setOneValueCap(TW_CAPABILITY &cap, Napi::Object obj) {
     return entry(DG_CONTROL, DAT_CAPABILITY, MSG_SET, (TW_MEMREF) &cap);
 }
 
-TW_UINT16 TwainSession::setSpecialCap(TW_CAPABILITY &cap, TW_UINT16 type, Napi::Value value) {
+TW_UINT16 TwainSession::setSpecialCap(TW_CAPABILITY &cap, TW_UINT16 type, Napi::Object value) {
     std::cout << "start setSpecialCap:" << std::endl;
     cap.ConType = type;
     if (type == TWTY_BOOL) {
