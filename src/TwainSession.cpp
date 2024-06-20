@@ -367,44 +367,53 @@ TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap, Napi::Object obj) 
     pEnum->NumItems = numItems;
     pEnum->CurrentIndex = static_cast<TW_UINT32>(obj.Get("currentIndex").As<Napi::Number>().Uint32Value());
     pEnum->DefaultIndex = static_cast<TW_UINT32>(obj.Get("defaultIndex").As<Napi::Number>().Uint32Value());
+
     switch (pEnum->ItemType) {
-        case TWTY_INT8:
-            for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
-                pEnum->ItemList[index] = itemList[index];
-            }
-            break;
-        case TWTY_INT16:
-            for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
-                pEnum->ItemList[index] = itemList[index];
-            }
-            break;
-        case TWTY_INT32:
-            for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
-                pEnum->ItemList[index] = itemList[index];
-            }
-            break;
-        case TWTY_UINT8:
-            for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
-                pEnum->ItemList[index] = itemList[index];
-            }
-            break;
-        case TWTY_UINT16:
-            for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
-                pEnum->ItemList[index] = itemList[index];
-            }
-            break;
-        case TWTY_UINT32:
-            for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
-                pEnum->ItemList[index] = itemList[index];
-            }
-            break;
-        case TWTY_BOOL:
-            for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
-                pEnum->ItemList[index] = itemList[index];
-            }
-            break;
+    case TWTY_INT8:
+      for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
+        //list[index] = ((pTW_INT8)(&pEnum->ItemList))[index];
+        pEnum->ItemList[index] = (TW_INT8)&itemList[index];
+      }
+      break;
+    case TWTY_INT16:
+      for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
+        //list[index] = ((pTW_INT16)(&pEnum->ItemList))[index];
+        pEnum->ItemList[index] = (TW_INT16)&itemList[index];
+      }
+      break;
+    case TWTY_INT32:
+      for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
+        //list[index] = ((pTW_INT32)(&pEnum->ItemList))[index];
+        pEnum->ItemList[index] = (TW_INT32)&itemList[index];
+      }
+      break;
+    case TWTY_UINT8:
+      for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
+        //list[index] = ((pTW_UINT8)(&pEnum->ItemList))[index];
+        pEnum->ItemList[index] = (TW_UINT8)&itemList[index];
+      }
+      break;
+    case TWTY_UINT16:
+      for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
+        //list[index] = ((pTW_UINT16)(&pEnum->ItemList))[index];
+        pEnum->ItemList[index] = (TW_UINT16)&itemList[index];
+      }
+      break;
+    case TWTY_UINT32:
+      for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
+        //list[index] = ((pTW_UINT32)(&pEnum->ItemList))[index];
+        pEnum->ItemList[index] = (TW_UINT32)&itemList[index];
+      }
+      break;
+    case TWTY_BOOL:
+      for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
+        pEnum->ItemList[index] = (TW_BOOL)&itemList[index];
+      }
+      break;
     }
+
     for (TW_UINT32 i = 0; i < numItems; ++i) {
+      
         //pEnum->ItemList[i] = itemList[i].As<Napi::Number>().Uint32Value();
     }
 
