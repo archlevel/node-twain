@@ -262,6 +262,7 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
                 for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
                     list[index] = pEnum->ItemList[index];
                 }
+                break;
         }
         enumResult.Set("currentIndex", pEnum->CurrentIndex);
         enumResult.Set("defaultIndex", pEnum->DefaultIndex);
