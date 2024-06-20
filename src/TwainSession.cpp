@@ -465,16 +465,16 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, TW_UINT16 type, Napi::Ar
                 pArray->ItemList[i] = (TW_INT16)&array[i];
                 break;
             case TWTY_INT32:
-                pArray->ItemList[i] = (TW_INT32)array[i];
+                pArray->ItemList[i] = (TW_INT32)&array[i];
                 break;
             case TWTY_UINT8:
-                pArray->ItemList[i] = (TW_UINT8)array[i];
+                pArray->ItemList[i] = (TW_UINT8)&array[i];
                 break;
             case TWTY_UINT16:
-                pArray->ItemList[i] = (TW_UINT16)array[i];
+                pArray->ItemList[i] = (TW_UINT16)&array[i];
                 break;
             case TWTY_UINT32:
-                pArray->ItemList[i] = (TW_UINT32)array[i];
+                pArray->ItemList[i] = (TW_UINT32)&array[i];
                 break;
         }
     }
