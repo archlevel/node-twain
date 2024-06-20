@@ -330,7 +330,10 @@ TW_UINT16 TwainSession::setCap(TW_UINT16 Cap, TW_UINT16 type,Napi::Value value) 
         } else if (type == TWON_RANGE) {
             rc = setRangeCap(cap, obj);
         } else if (type == TWON_ONEVALUE) {
-              rc = setOneValueCap(cap, obj);
+            rc = setOneValueCap(cap, obj);
+        } else if (type == TWON_ICONID || type == TWON_DSMID || type == TWON_DSMCODEID ||
+                              type == TWON_DONTCARE8 || type == TWON_DONTCARE16 || type == TWON_DONTCARE32) {
+           rc = setSpecialCap(cap, type, obj);
         } else {
             std::cerr << "Unsupported object type" << std::endl;
         }
@@ -427,6 +430,21 @@ TW_UINT16 TwainSession::setOneValueCap(TW_CAPABILITY &cap, Napi::Object obj) {
     pTW_ONEVALUE pOneValue = (pTW_ONEVALUE) lockMemory(cap.hContainer);
     pOneValue->ItemType = static_cast<TW_UINT16>(obj.Get("itemType").As<Napi::Number>().Uint32Value());
     pOneValue->Item = obj.Get("value").As<Napi::Number>().Uint32Value();
+
+    unlockMemory(cap.hContainer);
+
+    return entry(DG_CONTROL, DAT_CAPABILITY, MSG_SET, (TW_MEMREF) &cap);
+}
+
+TW_UINT16 TwainSession::setSpecialCap(TW_CAPABILITY &cap, TW_UINT16 type, Napi::Object obj) {
+    cap.ConType = type;
+    cap.hContainer = allocMemory(sizeof(TW_UINT32)); // Assuming the special types can fit into a 32-bit value
+    if (cap.hContainer == NULL) {
+        return TWRC_FAILURE;
+    }
+
+    pTW_UINT32 pSpecial = (pTW_UINT32) lockMemory(cap.hContainer);
+    *pSpecial = obj.Get("value").As<Napi::Number>().Uint32Value();
 
     unlockMemory(cap.hContainer);
 
