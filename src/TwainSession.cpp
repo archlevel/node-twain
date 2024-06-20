@@ -457,7 +457,26 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, TW_UINT16 type, Napi::Ar
     pArray->NumItems = numItems;
 
     for (TW_UINT32 i = 0; i < numItems; ++i) {
-        //pArray->ItemList[i] = array[i].As<Napi::Number>().Uint32Value();
+        switch (pArray->ItemType) {
+            case TWTY_INT8:
+                pArray->ItemList[i] = (TW_INT8)&array[i];
+                break;
+            case TWTY_INT16:
+                pArray->ItemList[i] = (TW_INT16)&array[i];
+                break;
+            case TWTY_INT32:
+                pArray->ItemList[i] = (TW_INT32)array[i];
+                break;
+            case TWTY_UINT8:
+                pArray->ItemList[i] = (TW_UINT8)array[i];
+                break;
+            case TWTY_UINT16:
+                pArray->ItemList[i] = (TW_UINT16)array[i];
+                break;
+            case TWTY_UINT32:
+                pArray->ItemList[i] = (TW_UINT32)array[i];
+                break;
+        }
     }
 
     unlockMemory(cap.hContainer);
