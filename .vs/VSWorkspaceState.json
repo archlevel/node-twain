@@ -1,6 +1,8 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\src"
   ],
+  "SelectedNode": "\\src\\TwainSDK.h",
   "PreviewInSolutionExplorer": false
 }

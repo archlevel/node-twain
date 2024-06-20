@@ -274,14 +274,17 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
 
 Napi::Value TwainSDK::setCapability(const Napi::CallbackInfo &info) {
     Napi::Env env = info.Env();
-    if (info.Length() < 3 || !info[0].IsNumber() || !info[1].IsNumber() || !info[2].IsNumber()) {
-        Napi::TypeError::New(env, "Expected three numbers").ThrowAsJavaScriptException();
-        return env.Null();
-    }
-    TW_UINT16 CAP = info[0].As<Napi::Number>().Uint32Value();
-    TW_UINT16 ITEM_TYPE = info[1].As<Napi::Number>().Uint32Value();
+    //if (info.Length() < 3 || !info[0].IsNumber() || !info[1].IsNumber() || !info[2].IsNumber()) {
+        //Napi::TypeError::New(env, "Expected three numbers").ThrowAsJavaScriptException();
+        //return env.Null();
+   //}
+    std::cout << "setCapability:" << "-aa" << std::endl;
+    TW_UINT16 CAP = static_cast<TW_UINT16>(info[0].As<Napi::Number>().Uint32Value());
+    std::cout << "setCapability:" << "-bb" << std::endl;
+    TW_UINT16 ITEM_TYPE = static_cast<TW_UINT16>(info[1].As<Napi::Number>().Uint32Value());
+    std::cout << "setCapability:" << "-cc" << std::endl;
     int value = static_cast<int>(info[2].As<Napi::Number>().Uint32Value());
-
+    std::cout << "setCapability:" << "-dd" << std::endl;
     TW_UINT16 rc = session.setCap(CAP, value, ITEM_TYPE);
 
     if (rc == TWRC_SUCCESS) {
@@ -314,6 +317,13 @@ Napi::Value TwainSDK::scan(const Napi::CallbackInfo &info) {
     session.scan(transfer, path, env, jsFunction);
     session.disableDS();
     return Napi::Boolean::New(env, true);
+}
+
+Napi::Value TwainSDK::release(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  session.closeDS();
+  session.freeDSM();
+  return Napi::Boolean::New(env, false);
 }
 
 
