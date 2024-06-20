@@ -36,10 +36,6 @@ Napi::Function registerTwainSDK(Napi::Env env) {
                     "setCallback",
                     static_cast<napi_property_attributes>(napi_writable | napi_configurable)
             ),
-            TwainSDK::InstanceMethod<&TwainSDK::setback>(
-                    "setback",
-                    static_cast<napi_property_attributes>(napi_writable | napi_configurable)
-            ),
             TwainSDK::InstanceMethod<&TwainSDK::enableDataSource>(
                     "enableDataSource",
                     static_cast<napi_property_attributes>(napi_writable | napi_configurable)

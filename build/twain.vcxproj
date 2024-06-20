@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{34FB9493-8E6B-7052-5D39-3D854D91FB21}</ProjectGuid>
+    <ProjectGuid>{52765C35-CBF1-77FF-F70E-57B219CB7207}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>twain</RootNamespace>
     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
@@ -48,7 +48,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\include\node;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\src;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\openssl\config;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\openssl\openssl\include;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\uv\include;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\zlib;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\v8\include;..\node_modules\node-addon-api;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\include\node;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\src;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\openssl\config;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\openssl\openssl\include;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\uv\include;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\zlib;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\v8\include;..\..\.pnpm\node-twain@0.0.16\node_modules\node-twain\node_modules\node-addon-api;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <BufferSecurityCheck>true</BufferSecurityCheck>
@@ -84,13 +84,13 @@
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\include\node;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\src;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\openssl\config;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\openssl\openssl\include;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\uv\include;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\zlib;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\v8\include;..\node_modules\node-addon-api;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\include\node;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\src;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\openssl\config;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\openssl\openssl\include;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\uv\include;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\zlib;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\v8\include;..\..\.pnpm\node-twain@0.0.16\node_modules\node-twain\node_modules\node-addon-api;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NODE_GYP_MODULE_NAME=twain;USING_UV_SHARED=1;USING_V8_SHARED=1;V8_DEPRECATION_WARNINGS=1;V8_DEPRECATION_WARNINGS;V8_IMMINENT_DEPRECATION_WARNINGS;_GLIBCXX_USE_CXX11_ABI=1;WIN32;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_HAS_EXCEPTIONS=0;OPENSSL_NO_PINSHARED;OPENSSL_THREADS;_HAS_EXCEPTIONS=1;BUILDING_NODE_EXTENSION;HOST_BINARY=&quot;node.exe&quot;;DEBUG;_DEBUG;V8_ENABLE_CHECKS;%(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\include\node;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\src;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\openssl\config;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\openssl\openssl\include;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\uv\include;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\zlib;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\v8\include;..\node_modules\node-addon-api;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\include\node;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\src;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\openssl\config;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\openssl\openssl\include;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\uv\include;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\zlib;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\v8\include;..\..\.pnpm\node-twain@0.0.16\node_modules\node-twain\node_modules\node-addon-api;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <BufferSecurityCheck>true</BufferSecurityCheck>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -129,7 +129,7 @@
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\include\node;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\src;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\openssl\config;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\openssl\openssl\include;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\uv\include;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\zlib;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\v8\include;..\node_modules\node-addon-api;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\include\node;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\src;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\openssl\config;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\openssl\openssl\include;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\uv\include;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\zlib;C:\Users\Administrator\AppData\Local\node-gyp\Cache\16.20.2\deps\v8\include;..\..\.pnpm\node-twain@0.0.16\node_modules\node-twain\node_modules\node-addon-api;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NODE_GYP_MODULE_NAME=twain;USING_UV_SHARED=1;USING_V8_SHARED=1;V8_DEPRECATION_WARNINGS=1;V8_DEPRECATION_WARNINGS;V8_IMMINENT_DEPRECATION_WARNINGS;_GLIBCXX_USE_CXX11_ABI=1;WIN32;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_HAS_EXCEPTIONS=0;OPENSSL_NO_PINSHARED;OPENSSL_THREADS;_HAS_EXCEPTIONS=1;BUILDING_NODE_EXTENSION;HOST_BINARY=&quot;node.exe&quot;;%(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
