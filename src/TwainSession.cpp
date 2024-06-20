@@ -316,44 +316,121 @@ TW_UINT16 TwainSession::getCurrentCap(TW_CAPABILITY &cap) {
     return rc;
 }
 
-TW_UINT16 TwainSession::setCap(TW_UINT16 Cap, const int value, TW_UINT16 type) {
+TW_UINT16 TwainSession::setCap(TW_UINT16 Cap, TW_UINT16 type,Napi::Value value) {
     TW_UINT16 rc = TWRC_FAILURE;
     TW_CAPABILITY cap;
     cap.Cap = Cap;
+    cap.ConType = type;
+    cap.hContainer = NULL;
+
+    if (value.IsObject()) {
+        Napi::Object obj = value.As<Napi::Object>();
+        if (type == TWON_ENUMERATION) {
+            rc = setEnumerationCap(cap, obj);
+        } else if (type == TWON_RANGE) {
+            rc = setRangeCap(cap, obj);
+        } else if (type == TWON_ONEVALUE) {
+              rc = setOneValueCap(cap, obj);
+        } else {
+            std::cerr << "Unsupported object type" << std::endl;
+        }
+    } else if (value.IsArray()) {
+        rc = setArrayCap(cap, type, value.As<Napi::Array>());
+    } else {
+        std::cerr << "Unsupported value type" << std::endl;
+    }
+
+    if (cap.hContainer != NULL) {
+        freeMemory(cap.hContainer);
+    }
+
+    return rc;
+}
+
+TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap, Napi::Object obj) {
+    cap.ConType = TWON_ENUMERATION;
+    Napi::Array itemList = obj.Get("itemList").As<Napi::Array>();
+    TW_UINT16 itemType = static_cast<TW_UINT16>(obj.Get("itemType").As<Napi::Number>().Uint32Value());
+    TW_UINT32 numItems = itemList.Length();
+    TW_UINT32 containerSize = sizeof(TW_ENUMERATION) + (numItems - 1) * sizeof(TW_UINT32); // Adjust size as per item type
+
+    cap.hContainer = allocMemory(containerSize);
+    if (cap.hContainer == NULL) {
+        return TWRC_FAILURE;
+    }
+
+    pTW_ENUMERATION pEnum = (pTW_ENUMERATION) lockMemory(cap.hContainer);
+    pEnum->ItemType = itemType;
+    pEnum->NumItems = numItems;
+    pEnum->CurrentIndex = static_cast<TW_UINT32>(obj.Get("currentIndex").As<Napi::Number>().Uint32Value());
+    pEnum->DefaultIndex = static_cast<TW_UINT32>(obj.Get("defaultIndex").As<Napi::Number>().Uint32Value());
+
+    for (TW_UINT32 i = 0; i < numItems; ++i) {
+        pEnum->ItemList[i] = itemList[i].As<Napi::Number>().Uint32Value();
+    }
+
+    unlockMemory(cap.hContainer);
+
+    return entry(DG_CONTROL, DAT_CAPABILITY, MSG_SET, (TW_MEMREF) &cap);
+}
+
+TW_UINT16 TwainSession::setRangeCap(TW_CAPABILITY &cap, Napi::Object obj) {
+    cap.ConType = TWON_RANGE;
+    cap.hContainer = allocMemory(sizeof(TW_RANGE));
+    if (cap.hContainer == NULL) {
+        return TWRC_FAILURE;
+    }
+
+    pTW_RANGE pRange = (pTW_RANGE) lockMemory(cap.hContainer);
+    pRange->ItemType = static_cast<TW_UINT16>(obj.Get("itemType").As<Napi::Number>().Uint32Value());
+    pRange->MinValue = obj.Get("minValue").As<Napi::Number>().Uint32Value();
+    pRange->MaxValue = obj.Get("maxValue").As<Napi::Number>().Uint32Value();
+    pRange->StepSize = obj.Get("stepSize").As<Napi::Number>().Uint32Value();
+    pRange->DefaultValue = obj.Get("defaultValue").As<Napi::Number>().Uint32Value();
+    pRange->CurrentValue = obj.Get("currentValue").As<Napi::Number>().Uint32Value();
+
+    unlockMemory(cap.hContainer);
+
+    return entry(DG_CONTROL, DAT_CAPABILITY, MSG_SET, (TW_MEMREF) &cap);
+}
+
+TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, TW_UINT16 type, Napi::Array array) {
+    cap.ConType = TWON_ARRAY;
+    TW_UINT32 numItems = array.Length();
+    TW_UINT32 containerSize = sizeof(TW_ARRAY) + (numItems - 1) * sizeof(TW_UINT32); // Adjust size as per item type
+
+    cap.hContainer = allocMemory(containerSize);
+    if (cap.hContainer == NULL) {
+        return TWRC_FAILURE;
+    }
+
+    pTW_ARRAY pArray = (pTW_ARRAY) lockMemory(cap.hContainer);
+    pArray->ItemType = type;
+    pArray->NumItems = numItems;
+
+    for (TW_UINT32 i = 0; i < numItems; ++i) {
+        pArray->ItemList[i] = array[i].As<Napi::Number>().Uint32Value();
+    }
+
+    unlockMemory(cap.hContainer);
+
+    return entry(DG_CONTROL, DAT_CAPABILITY, MSG_SET, (TW_MEMREF) &cap);
+}
+
+TW_UINT16 TwainSession::setOneValueCap(TW_CAPABILITY &cap, Napi::Object obj) {
     cap.ConType = TWON_ONEVALUE;
     cap.hContainer = allocMemory(sizeof(TW_ONEVALUE));
     if (cap.hContainer == NULL) {
-        return rc;
-    }
-    pTW_ONEVALUE pVal = (pTW_ONEVALUE) lockMemory(cap.hContainer);
-    pVal->ItemType = type;
-    switch (type) {
-        case TWTY_INT8:
-            *(TW_INT8 *) &pVal->Item = (TW_INT8) value;
-            break;
-        case TWTY_INT16:
-            *(TW_INT16 *) &pVal->Item = (TW_INT16) value;
-            break;
-        case TWTY_INT32:
-            *(TW_INT32 *) &pVal->Item = (TW_INT32) value;
-            break;
-        case TWTY_UINT8:
-            *(TW_UINT8 *) &pVal->Item = (TW_UINT8) value;
-            break;
-        case TWTY_UINT16:
-            *(TW_UINT16 *) &pVal->Item = (TW_UINT16) value;
-            break;
-        case TWTY_UINT32:
-            memcpy(&pVal->Item, &value, sizeof(TW_UINT32));
-            break;
-        case TWTY_BOOL:
-            memcpy(&pVal->Item, &value, sizeof(TW_BOOL));
-            break;
+        return TWRC_FAILURE;
     }
 
-    rc = entry(DG_CONTROL, DAT_CAPABILITY, MSG_SET, (TW_MEMREF) &cap);
+    pTW_ONEVALUE pOneValue = (pTW_ONEVALUE) lockMemory(cap.hContainer);
+    pOneValue->ItemType = static_cast<TW_UINT16>(obj.Get("itemType").As<Napi::Number>().Uint32Value());
+    pOneValue->Item = obj.Get("value").As<Napi::Number>().Uint32Value();
 
-    return rc;
+    unlockMemory(cap.hContainer);
+
+    return entry(DG_CONTROL, DAT_CAPABILITY, MSG_SET, (TW_MEMREF) &cap);
 }
 
 TW_UINT16 TwainSession::setCallback() {

@@ -283,10 +283,9 @@ Napi::Value TwainSDK::setCapability(const Napi::CallbackInfo &info) {
     std::cout << "setCapability:" << "-bb" << std::endl;
     TW_UINT16 ITEM_TYPE = static_cast<TW_UINT16>(info[1].As<Napi::Number>().Uint32Value());
     std::cout << "setCapability:" << "-cc" << std::endl;
-    int value = static_cast<int>(info[2].As<Napi::Number>().Uint32Value());
+    Napi::Value value = info[2];
     std::cout << "setCapability:" << "-dd" << std::endl;
-    TW_UINT16 rc = session.setCap(CAP, value, ITEM_TYPE);
-
+    TW_UINT16 rc = session.setCap(CAP, ITEM_TYPE,value);
     if (rc == TWRC_SUCCESS) {
         return Napi::Boolean::New(env, true);
     } else {
