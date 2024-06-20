@@ -121,4 +121,4 @@ console-v2/
 # Visual Studio Code project settings
 .vscode
 console-angular/dist/
-.vs
+.vs/
