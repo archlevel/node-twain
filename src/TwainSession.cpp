@@ -332,7 +332,8 @@ TW_UINT16 TwainSession::setCap(TW_UINT16 Cap, TW_UINT16 type,Napi::Value value) 
         } else if (type == TWON_ONEVALUE) {
             rc = setOneValueCap(cap, obj);
         } else if (type == TWON_ICONID || type == TWON_DSMID || type == TWON_DSMCODEID ||
-                              type == TWON_DONTCARE8 || type == TWON_DONTCARE16 || type == TWON_DONTCARE32) {
+                   type == TWON_DONTCARE8 || type == TWON_DONTCARE16 || type == TWON_DONTCARE32 ||
+                   type == TWTY_BOOL || type == TWTY_STR32 || type == TWTY_STR64 || type == TWTY_STR128 || type == TWTY_STR255) {
            rc = setSpecialCap(cap, type, obj);
         } else {
             std::cerr << "Unsupported object type" << std::endl;
@@ -500,15 +501,45 @@ TW_UINT16 TwainSession::setOneValueCap(TW_CAPABILITY &cap, Napi::Object obj) {
     return entry(DG_CONTROL, DAT_CAPABILITY, MSG_SET, (TW_MEMREF) &cap);
 }
 
-TW_UINT16 TwainSession::setSpecialCap(TW_CAPABILITY &cap, TW_UINT16 type, Napi::Object obj) {
+TW_UINT16 TwainSession::setSpecialCap(TW_CAPABILITY &cap, TW_UINT16 type, Napi::Value value) {
     cap.ConType = type;
-    cap.hContainer = allocMemory(sizeof(TW_UINT32)); // Assuming the special types can fit into a 32-bit value
+    if (type == TWTY_BOOL) {
+        cap.hContainer = allocMemory(sizeof(TW_BOOL));
+    } else if (type == TWTY_STR32) {
+        cap.hContainer = allocMemory(sizeof(TW_STR32));
+    } else if (type == TWTY_STR64) {
+        cap.hContainer = allocMemory(sizeof(TW_STR64));
+    } else if (type == TWTY_STR128) {
+        cap.hContainer = allocMemory(sizeof(TW_STR128));
+    } else if (type == TWTY_STR255) {
+        cap.hContainer = allocMemory(sizeof(TW_STR255));
+    } else {
+        cap.hContainer = allocMemory(sizeof(TW_UINT32)); // Assuming the special types can fit into a 32-bit value
+    }
+
     if (cap.hContainer == NULL) {
         return TWRC_FAILURE;
     }
 
-    pTW_UINT32 pSpecial = (pTW_UINT32) lockMemory(cap.hContainer);
-    *pSpecial = obj.Get("value").As<Napi::Number>().Uint32Value();
+    if (type == TWTY_BOOL) {
+        pTW_BOOL pBool = (pTW_BOOL) lockMemory(cap.hContainer);
+        *pBool = value.As<Napi::Boolean>().Value();
+    } else if (type == TWTY_STR32) {
+        pTW_STR32 pStr32 = (pTW_STR32) lockMemory(cap.hContainer);
+        strcpy(reinterpret_cast<char*>(pStr32), value.As<Napi::String>().Utf8Value().c_str());
+    } else if (type == TWTY_STR64) {
+        pTW_STR64 pStr64 = (pTW_STR64) lockMemory(cap.hContainer);
+        strcpy(reinterpret_cast<char*>(pStr64), value.As<Napi::String>().Utf8Value().c_str());
+    } else if (type == TWTY_STR128) {
+        pTW_STR128 pStr128 = (pTW_STR128) lockMemory(cap.hContainer);
+        strcpy(reinterpret_cast<char*>(pStr128), value.As<Napi::String>().Utf8Value().c_str());
+    } else if (type == TWTY_STR255) {
+        pTW_STR255 pStr255 = (pTW_STR255) lockMemory(cap.hContainer);
+        strcpy(reinterpret_cast<char*>(pStr255), value.As<Napi::String>().Utf8Value().c_str());
+    } else {
+        pTW_UINT32 pSpecial = (pTW_UINT32) lockMemory(cap.hContainer);
+        *pSpecial = value.As<Napi::Number>().Uint32Value();
+    }
 
     unlockMemory(cap.hContainer);
 
