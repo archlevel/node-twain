@@ -369,7 +369,7 @@ TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap, Napi::Object obj) 
     pEnum->DefaultIndex = static_cast<TW_UINT32>(obj.Get("defaultIndex").As<Napi::Number>().Uint32Value());
 
     for (TW_UINT32 i = 0; i < numItems; ++i) {
-        pEnum->ItemList[i] = itemList[i].As<Napi::Number>().Uint32Value();
+        //pEnum->ItemList[i] = itemList[i].As<Napi::Number>().Uint32Value();
     }
 
     unlockMemory(cap.hContainer);
@@ -412,7 +412,7 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, TW_UINT16 type, Napi::Ar
     pArray->NumItems = numItems;
 
     for (TW_UINT32 i = 0; i < numItems; ++i) {
-        pArray->ItemList[i] = array[i].As<Napi::Number>().Uint32Value();
+        //pArray->ItemList[i] = array[i].As<Napi::Number>().Uint32Value();
     }
 
     unlockMemory(cap.hContainer);
