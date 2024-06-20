@@ -360,12 +360,12 @@ TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap, Napi::Object obj) 
     TW_UINT16 itemType = static_cast<TW_UINT16>(obj.Get("itemType").As<Napi::Number>().Uint32Value());
     TW_UINT32 numItems = itemList.Length();
     TW_UINT32 containerSize = sizeof(TW_ENUMERATION) + (numItems - 1) * sizeof(TW_UINT32); // Adjust size as per item type
-    std::cout << "start setEnumerationCap:" << std::endl;
+    std::cout << "start allocMemory:" << std::endl;
     cap.hContainer = allocMemory(containerSize);
     if (cap.hContainer == NULL) {
         return TWRC_FAILURE;
     }
-
+    std::cout << "start lockMemory:" << std::endl;
     pTW_ENUMERATION pEnum = (pTW_ENUMERATION) lockMemory(cap.hContainer);
     pEnum->ItemType = itemType;
     pEnum->NumItems = numItems;
@@ -415,15 +415,16 @@ TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap, Napi::Object obj) 
           }
           break;
     }
-
+    std::cout << "start unlockMemory:" << std::endl;
     unlockMemory(cap.hContainer);
-
+    std::cout << "start entry:" << std::endl;
     return entry(DG_CONTROL, DAT_CAPABILITY, MSG_SET, (TW_MEMREF) &cap);
 }
 
 TW_UINT16 TwainSession::setRangeCap(TW_CAPABILITY &cap, Napi::Object obj) {
     std::cout << "start setRangeCap:" << std::endl;
     cap.ConType = TWON_RANGE;
+    std::cout << "start allocMemory:" << std::endl;
     cap.hContainer = allocMemory(sizeof(TW_RANGE));
     if (cap.hContainer == NULL) {
         return TWRC_FAILURE;
@@ -437,21 +438,23 @@ TW_UINT16 TwainSession::setRangeCap(TW_CAPABILITY &cap, Napi::Object obj) {
     pRange->DefaultValue = obj.Get("defaultValue").As<Napi::Number>().Uint32Value();
     pRange->CurrentValue = obj.Get("currentValue").As<Napi::Number>().Uint32Value();
 
+    std::cout << "start unlockMemory:" << std::endl;
     unlockMemory(cap.hContainer);
     std::cout << "start entry:" << std::endl;
     return entry(DG_CONTROL, DAT_CAPABILITY, MSG_SET, (TW_MEMREF) &cap);
 }
 
 TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, TW_UINT16 type, Napi::Array array) {
+    std::cout << "start setArrayCap:" << std::endl;
     cap.ConType = TWON_ARRAY;
     TW_UINT32 numItems = array.Length();
     TW_UINT32 containerSize = sizeof(TW_ARRAY) + (numItems - 1) * sizeof(TW_UINT32); // Adjust size as per item type
-
+    std::cout << "start allocMemory:" << std::endl;
     cap.hContainer = allocMemory(containerSize);
     if (cap.hContainer == NULL) {
         return TWRC_FAILURE;
     }
-
+    std::cout << "start lockMemory:" << std::endl;
     pTW_ARRAY pArray = (pTW_ARRAY) lockMemory(cap.hContainer);
     pArray->ItemType = type;
     pArray->NumItems = numItems;
@@ -478,29 +481,32 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, TW_UINT16 type, Napi::Ar
                 break;
         }
     }
-
+    std::cout << "start unlockMemory:" << std::endl;
     unlockMemory(cap.hContainer);
-
+    std::cout << "start entry:" << std::endl;
     return entry(DG_CONTROL, DAT_CAPABILITY, MSG_SET, (TW_MEMREF) &cap);
 }
 
 TW_UINT16 TwainSession::setOneValueCap(TW_CAPABILITY &cap, Napi::Object obj) {
+    std::cout << "start setOneValueCap:" << std::endl;
     cap.ConType = TWON_ONEVALUE;
+    std::cout << "start allocMemory:" << std::endl;
     cap.hContainer = allocMemory(sizeof(TW_ONEVALUE));
     if (cap.hContainer == NULL) {
         return TWRC_FAILURE;
     }
-
+    std::cout << "start lockMemory:" << std::endl;
     pTW_ONEVALUE pOneValue = (pTW_ONEVALUE) lockMemory(cap.hContainer);
     pOneValue->ItemType = static_cast<TW_UINT16>(obj.Get("itemType").As<Napi::Number>().Uint32Value());
     pOneValue->Item = obj.Get("value").As<Napi::Number>().Uint32Value();
-
+    std::cout << "start unlockMemory:" << std::endl;
     unlockMemory(cap.hContainer);
-
+    std::cout << "start entry:" << std::endl;
     return entry(DG_CONTROL, DAT_CAPABILITY, MSG_SET, (TW_MEMREF) &cap);
 }
 
 TW_UINT16 TwainSession::setSpecialCap(TW_CAPABILITY &cap, TW_UINT16 type, Napi::Value value) {
+    std::cout << "start setSpecialCap:" << std::endl;
     cap.ConType = type;
     if (type == TWTY_BOOL) {
         cap.hContainer = allocMemory(sizeof(TW_BOOL));
@@ -515,11 +521,10 @@ TW_UINT16 TwainSession::setSpecialCap(TW_CAPABILITY &cap, TW_UINT16 type, Napi::
     } else {
         cap.hContainer = allocMemory(sizeof(TW_UINT32)); // Assuming the special types can fit into a 32-bit value
     }
-
+    std::cout << "after allocMemory:" << std::endl;
     if (cap.hContainer == NULL) {
         return TWRC_FAILURE;
     }
-
     if (type == TWTY_BOOL) {
         pTW_BOOL pBool = (pTW_BOOL) lockMemory(cap.hContainer);
         *pBool = value.As<Napi::Boolean>().Value();
@@ -539,9 +544,9 @@ TW_UINT16 TwainSession::setSpecialCap(TW_CAPABILITY &cap, TW_UINT16 type, Napi::
         pTW_UINT32 pSpecial = (pTW_UINT32) lockMemory(cap.hContainer);
         *pSpecial = value.As<Napi::Number>().Uint32Value();
     }
-
+    std::cout << "start unlockMemory:" << std::endl;
     unlockMemory(cap.hContainer);
-
+    std::cout << "start entry:" << std::endl;
     return entry(DG_CONTROL, DAT_CAPABILITY, MSG_SET, (TW_MEMREF) &cap);
 }
 
