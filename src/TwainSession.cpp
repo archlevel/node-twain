@@ -439,6 +439,8 @@ TW_UINT16 TwainSession::setRangeCap(TW_CAPABILITY &cap,TW_UINT16 type, Napi::Obj
     pRange->DefaultValue = obj.Get("defaultValue").As<Napi::Number>().Uint32Value();
     pRange->CurrentValue = obj.Get("currentValue").As<Napi::Number>().Uint32Value();
 
+    std::cout << "start pRange:" << pRange->MinValue << " @@@ " << pRange->MaxValue << std::endl;
+
     std::cout << "start unlockMemory:" << std::endl;
     unlockMemory(cap.hContainer);
     std::cout << "start entry:" << std::endl;
