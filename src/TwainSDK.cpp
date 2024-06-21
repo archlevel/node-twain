@@ -152,18 +152,13 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
             case TWTY_UINT8:
             case TWTY_UINT16:
             case TWTY_UINT32:
+            case TWTY_FIX32:
                 rangeResult.Set("minValue", Napi::Number::New(env, pRange->MinValue));
                 rangeResult.Set("maxValue", Napi::Number::New(env, pRange->MaxValue));
                 rangeResult.Set("stepSize", Napi::Number::New(env, pRange->StepSize));
                 rangeResult.Set("defaultValue", Napi::Number::New(env, pRange->DefaultValue));
                 rangeResult.Set("currentValue", Napi::Number::New(env, pRange->CurrentValue));
                 break;
-//            case TWTY_FIX32:
-//                rangeResult.Set("minValue", Napi::Number::New(env, fix32ToFloat(pRange->MinValue)));
-//                rangeResult.Set("maxValue", Napi::Number::New(env, fix32ToFloat(pRange->MaxValue)));
-//                rangeResult.Set("stepSize", Napi::Number::New(env, fix32ToFloat(pRange->StepSize)));
-//                rangeResult.Set("defaultValue", Napi::Number::New(env, fix32ToFloat(pRange->DefaultValue)));
-//                rangeResult.Set("currentValue", Napi::Number::New(env, fix32ToFloat(pRange->CurrentValue)));
         }
         session.unlockMemory(cap.hContainer);
         return rangeResult;
