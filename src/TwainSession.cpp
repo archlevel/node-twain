@@ -367,11 +367,11 @@ TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap,TW_UINT16 type, Nap
     }
     std::cout << "start lockMemory:" << std::endl;
     pTW_ENUMERATION pEnum = (pTW_ENUMERATION) lockMemory(cap.hContainer);
-    pEnum->ItemType = itemType;
+    pEnum->ItemType = static_cast<TW_UINT16>(obj.Get("itemType").As<Napi::Number>().Uint32Value());
     pEnum->NumItems = numItems;
     pEnum->CurrentIndex = static_cast<TW_UINT32>(obj.Get("currentIndex").As<Napi::Number>().Uint32Value());
     pEnum->DefaultIndex = static_cast<TW_UINT32>(obj.Get("defaultIndex").As<Napi::Number>().Uint32Value());
-
+    std::cout << "set pEnum->ItemType= "<< pEnum->ItemType << std::endl;
     switch (pEnum->ItemType) {
         case TWTY_INT8:
           for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
@@ -438,7 +438,7 @@ TW_UINT16 TwainSession::setRangeCap(TW_CAPABILITY &cap,TW_UINT16 type, Napi::Obj
     pRange->StepSize = obj.Get("stepSize").As<Napi::Number>().Uint32Value();
     pRange->DefaultValue = obj.Get("defaultValue").As<Napi::Number>().Uint32Value();
     pRange->CurrentValue = obj.Get("currentValue").As<Napi::Number>().Uint32Value();
-
+    std::cout << "set pRange->ItemType= "<< pRange->ItemType << std::endl;
     std::cout << "start pRange:" << pRange->MinValue << " @@@ " << pRange->MaxValue << std::endl;
 
     std::cout << "start unlockMemory:" << std::endl;
@@ -452,18 +452,49 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, TW_UINT16 type, Napi::Ar
     std::cout << "start setArrayCap:" << std::endl;
     cap.ConType = TWON_ARRAY;
     TW_UINT32 numItems = array.Length();
-    TW_UINT32 containerSize = sizeof(TW_ARRAY) + (numItems - 1) * sizeof(TW_UINT32); // Adjust size as per item type
+    //TW_UINT32 containerSize = sizeof(TW_ARRAY) + (numItems - 1) * sizeof(TW_UINT32); // Adjust size as per item type
+    TW_UINT32 itemSize = sizeof(TW_UINT32); // 默认项大小为 TW_UINT32，你可以根据不同的类型进行调整
+    switch (type) {
+        case TWTY_INT8:
+            itemSize = sizeof(TW_INT8);
+            break;
+        case TWTY_INT16:
+            itemSize = sizeof(TW_INT16);
+            break;
+        case TWTY_INT32:
+            itemSize = sizeof(TW_INT32);
+            break;
+        case TWTY_UINT8:
+            itemSize = sizeof(TW_UINT8);
+            break;
+        case TWTY_UINT16:
+            itemSize = sizeof(TW_UINT16);
+            break;
+        case TWTY_UINT32:
+            itemSize = sizeof(TW_UINT32);
+            break;
+        case TWTY_BOOL:
+            itemSize = sizeof(TW_BOOL);
+            break;
+        default:
+            std::cerr << "Unsupported item type" << std::endl;
+            return TWRC_FAILURE;
+    }
+
+    TW_UINT32 arraySize = sizeof(TW_ARRAY) + (numItems - 1) * itemSize;
     std::cout << "start allocMemory:" << std::endl;
-    cap.hContainer = allocMemory(containerSize);
+    cap.hContainer = allocMemory(arraySize);
     if (cap.hContainer == NULL) {
         return TWRC_FAILURE;
     }
+
     std::cout << "start lockMemory:" << std::endl;
     pTW_ARRAY pArray = (pTW_ARRAY) lockMemory(cap.hContainer);
     pArray->ItemType = type;
     pArray->NumItems = numItems;
-
+    std::cout << "set pArray->ItemType= "<< pArray->ItemType << std::endl;
     for (TW_UINT32 i = 0; i < numItems; ++i) {
+
         switch (pArray->ItemType) {
             case TWTY_INT8:
                 pArray->ItemList[i] = (TW_INT8)&array[i];
