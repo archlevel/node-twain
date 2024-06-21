@@ -482,7 +482,7 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, Napi::Array array) {
     TW_UINT16 itemType = static_cast<TW_UINT16>(array.Get((uint32_t)0).As<Napi::Number>().Uint32Value());
     TW_UINT32 numItems = array.Length() - 1;  // 减去第一个元素（itemType）
     TW_UINT32 itemSize = sizeof(TW_UINT32); // 默认项大小为 TW_UINT32，你可以根据不同的类型进行调整
-    switch (type) {
+    switch (itemType) {
         case TWTY_INT8:
             itemSize = sizeof(TW_INT8);
             break;
