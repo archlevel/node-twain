@@ -122,3 +122,4 @@ console-v2/
 .vscode
 console-angular/dist/
 .vs/
+build/
