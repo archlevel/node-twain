@@ -69,15 +69,13 @@ public:
 
     TW_UINT16 setCap(TW_UINT16 Cap, TW_UINT16 type, Napi::Value value);
 
-    TW_UINT16 setEnumerationCap(TW_CAPABILITY& cap,TW_UINT16 type, Napi::Object obj);
+    TW_UINT16 setEnumerationCap(TW_CAPABILITY& cap,Napi::Object obj);
 
-    TW_UINT16 setRangeCap(TW_CAPABILITY& cap,TW_UINT16 type, Napi::Object obj);
+    TW_UINT16 setRangeCap(TW_CAPABILITY& cap,Napi::Object obj);
 
-    TW_UINT16 setArrayCap(TW_CAPABILITY& cap, TW_UINT16 type, Napi::Array array);
+    TW_UINT16 setArrayCap(TW_CAPABILITY& cap, Napi::Array array);
 
-    TW_UINT16 setOneValueCap(TW_CAPABILITY& cap,TW_UINT16 type, Napi::Object obj);
-
-    TW_UINT16 setSpecialCap(TW_CAPABILITY& cap, TW_UINT16 type, Napi::Object obj);
+    TW_UINT16 setOneValueCap(TW_CAPABILITY& cap,Napi::Object obj);
 
     TW_UINT16 setCallback();
 
