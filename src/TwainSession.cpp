@@ -357,7 +357,7 @@ TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap,TW_UINT16 type, Nap
     std::cout << "start setEnumerationCap:" << std::endl;
     cap.ConType = TWON_ENUMERATION;
     Napi::Array itemList = obj.Get("itemList").As<Napi::Array>();
-    TW_UINT16 itemType = type;
+    TW_UINT16 itemType = static_cast<TW_UINT16>(obj.Get("itemType").As<Napi::Number>().Uint32Value());
     TW_UINT32 numItems = itemList.Length();
     TW_UINT32 containerSize = sizeof(TW_ENUMERATION) + (numItems - 1) * sizeof(TW_UINT32); // Adjust size as per item type
     std::cout << "start allocMemory:" << std::endl;
@@ -432,7 +432,7 @@ TW_UINT16 TwainSession::setRangeCap(TW_CAPABILITY &cap,TW_UINT16 type, Napi::Obj
     }
     std::cout << "start lockMemory:" << std::endl;
     pTW_RANGE pRange = (pTW_RANGE) lockMemory(cap.hContainer);
-    pRange->ItemType = TWTY_FIX32;
+    pRange->ItemType = static_cast<TW_UINT16>(obj.Get("itemType").As<Napi::Number>().Uint32Value());
     pRange->MinValue = obj.Get("minValue").As<Napi::Number>().Uint32Value();
     pRange->MaxValue = obj.Get("maxValue").As<Napi::Number>().Uint32Value();
     pRange->StepSize = obj.Get("stepSize").As<Napi::Number>().Uint32Value();
@@ -502,8 +502,8 @@ TW_UINT16 TwainSession::setOneValueCap(TW_CAPABILITY &cap,TW_UINT16 itemType, Na
     }
     std::cout << "start lockMemory:" << std::endl;
     pTW_ONEVALUE pOneValue = (pTW_ONEVALUE) lockMemory(cap.hContainer);
-    pOneValue->ItemType = itemType;
-    pOneValue->Item = static_cast<TW_UINT32>(value.As<Napi::Number>().Uint32Value());
+    pOneValue->ItemType = static_cast<TW_UINT16>(obj.Get("itemType").As<Napi::Number>().Uint32Value());
+    pOneValue->Item = obj.Get("value").As<Napi::Number>().Uint32Value();
     std::cout << "start unlockMemory:" << std::endl;
     unlockMemory(cap.hContainer);
     std::cout << "start entry:" << std::endl;
