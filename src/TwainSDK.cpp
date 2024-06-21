@@ -145,6 +145,7 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
     if (cap.ConType == TWON_RANGE) {
         pTW_RANGE pRange = (pTW_RANGE) session.lockMemory(cap.hContainer);
         Napi::Object rangeResult = Napi::Object::New(env);
+        std::cout << "pRange->ItemType= "<< pRange->ItemType << std::endl;
         switch (pRange->ItemType) {
             case TWTY_INT8:
             case TWTY_INT16:
@@ -166,6 +167,7 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
         pTW_ARRAY pArray = (pTW_ARRAY) session.lockMemory(cap.hContainer);
         Napi::Array arr = Napi::Array::New(env, pArray->NumItems);
         for (TW_UINT32 index = 0; index < pArray->NumItems; index++) {
+            std::cout << "index= "<< index << ", pArray->ItemType= " << pArray->ItemType << std::endl;
             switch (pArray->ItemType) {
                 case TWTY_INT8:
                 case TWTY_INT16:
@@ -173,6 +175,7 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
                 case TWTY_UINT8:
                 case TWTY_UINT16:
                 case TWTY_UINT32:
+                case TWTY_FIX32:
                     arr[index] = Napi::Number::New(env, pArray->ItemList[index]);
                     break;
             }
@@ -181,6 +184,7 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
         return arr;
     } else if (cap.ConType == TWON_ONEVALUE) {
         pTW_ONEVALUE pOne = (pTW_ONEVALUE) session.lockMemory(cap.hContainer);
+        std::cout << "pOne->ItemType= "<< pRange->ItemType << std::endl;
         Napi::Value result;
         switch (pOne->ItemType) {
             case TWTY_INT8:
@@ -189,6 +193,7 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
             case TWTY_UINT8:
             case TWTY_UINT16:
             case TWTY_UINT32:
+            case TWTY_FIX32:
                 result = Napi::Number::New(env, pOne->Item);
                 break;
             case TWTY_BOOL:
@@ -221,7 +226,7 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
         pTW_ENUMERATION pEnum = (pTW_ENUMERATION) session.lockMemory(cap.hContainer);
         Napi::Object enumResult = Napi::Object::New(env);
         Napi::Array list = Napi::Array::New(env, pEnum->NumItems);
-
+        std::cout << "pEnum->ItemType= "<< pRange->ItemType << std::endl;
         switch (pEnum->ItemType) {
             case TWTY_INT8:
                 for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
