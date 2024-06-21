@@ -560,7 +560,7 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, Napi::Array array) {
     return rc;
 }
 
-TW_UINT16 TwainSession::setOneValueCap(TW_CAPABILITY &cap,TW_UINT16 itemType, Napi::Object obj) {
+TW_UINT16 TwainSession::setOneValueCap(TW_CAPABILITY &cap, Napi::Object obj) {
     std::cout << "start setOneValueCap:" << std::endl;
     cap.ConType = TWON_ONEVALUE;
     std::cout << "start allocMemory:" << std::endl;
