@@ -356,65 +356,85 @@ TW_UINT16 TwainSession::setCap(TW_UINT16 Cap, TW_UINT16 type,Napi::Value value) 
 TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap,TW_UINT16 type, Napi::Object obj) {
     std::cout << "start setEnumerationCap:" << std::endl;
     cap.ConType = TWON_ENUMERATION;
-    Napi::Array itemList = obj.Get("itemList").As<Napi::Array>();
+
+    // 获取itemType, numItems, currentIndex和defaultIndex
     TW_UINT16 itemType = static_cast<TW_UINT16>(obj.Get("itemType").As<Napi::Number>().Uint32Value());
+    //TW_UINT32 numItems = static_cast<TW_UINT32>(obj.Get("numItems").As<Napi::Number>().Uint32Value());
+    TW_UINT32 currentIndex = static_cast<TW_UINT32>(obj.Get("currentIndex").As<Napi::Number>().Uint32Value());
+    TW_UINT32 defaultIndex = static_cast<TW_UINT32>(obj.Get("defaultIndex").As<Napi::Number>().Uint32Value());
+    Napi::Array itemList = obj.Get("itemList").As<Napi::Array>();
     TW_UINT32 numItems = itemList.Length();
-    TW_UINT32 containerSize = sizeof(TW_ENUMERATION) + (numItems - 1) * sizeof(TW_UINT32); // Adjust size as per item type
+    TW_UINT32 itemSize = sizeof(TW_UINT32); // 默认项大小为 TW_UINT32，你可以根据不同的类型进行调整
+    switch (type) {
+        case TWTY_INT8:
+            itemSize = sizeof(TW_INT8);
+            break;
+        case TWTY_INT16:
+            itemSize = sizeof(TW_INT16);
+            break;
+        case TWTY_INT32:
+            itemSize = sizeof(TW_INT32);
+            break;
+        case TWTY_UINT8:
+            itemSize = sizeof(TW_UINT8);
+            break;
+        case TWTY_UINT16:
+            itemSize = sizeof(TW_UINT16);
+            break;
+        case TWTY_UINT32:
+            itemSize = sizeof(TW_UINT32);
+            break;
+        case TWTY_BOOL:
+            itemSize = sizeof(TW_BOOL);
+            break;
+        default:
+            std::cerr << "Unsupported item type" << std::endl;
+            return TWRC_FAILURE;
+    }
+
+    TW_UINT32 enumSize = sizeof(TW_ENUMERATION) + (numItems - 1) * itemSize;
     std::cout << "start allocMemory:" << std::endl;
-    cap.hContainer = allocMemory(containerSize);
+    cap.hContainer = allocMemory(enumSize);
     if (cap.hContainer == NULL) {
         return TWRC_FAILURE;
     }
+
     std::cout << "start lockMemory:" << std::endl;
     pTW_ENUMERATION pEnum = (pTW_ENUMERATION) lockMemory(cap.hContainer);
-    pEnum->ItemType = static_cast<TW_UINT16>(obj.Get("itemType").As<Napi::Number>().Uint32Value());
+    pEnum->ItemType = type;
     pEnum->NumItems = numItems;
-    pEnum->CurrentIndex = static_cast<TW_UINT32>(obj.Get("currentIndex").As<Napi::Number>().Uint32Value());
-    pEnum->DefaultIndex = static_cast<TW_UINT32>(obj.Get("defaultIndex").As<Napi::Number>().Uint32Value());
+    pEnum->CurrentIndex = currentIndex;
+    pEnum->DefaultIndex = defaultIndex;
+
     std::cout << "set pEnum->ItemType= "<< pEnum->ItemType << std::endl;
-    switch (pEnum->ItemType) {
-        case TWTY_INT8:
-          for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
-            //list[index] = ((pTW_INT8)(&pEnum->ItemList))[index];
-            pEnum->ItemList[index] = (TW_INT8)&itemList[index];
-          }
-          break;
-        case TWTY_INT16:
-          for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
-            //list[index] = ((pTW_INT16)(&pEnum->ItemList))[index];
-            pEnum->ItemList[index] = (TW_INT16)&itemList[index];
-          }
-          break;
-        case TWTY_INT32:
-          for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
-            //list[index] = ((pTW_INT32)(&pEnum->ItemList))[index];
-            pEnum->ItemList[index] = (TW_INT32)&itemList[index];
-          }
-          break;
-        case TWTY_UINT8:
-          for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
-            //list[index] = ((pTW_UINT8)(&pEnum->ItemList))[index];
-            pEnum->ItemList[index] = (TW_UINT8)&itemList[index];
-          }
-          break;
-        case TWTY_UINT16:
-          for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
-            //list[index] = ((pTW_UINT16)(&pEnum->ItemList))[index];
-            pEnum->ItemList[index] = (TW_UINT16)&itemList[index];
-          }
-          break;
-        case TWTY_UINT32:
-          for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
-            //list[index] = ((pTW_UINT32)(&pEnum->ItemList))[index];
-            pEnum->ItemList[index] = (TW_UINT32)&itemList[index];
-          }
-          break;
-        case TWTY_BOOL:
-          for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
-            pEnum->ItemList[index] = (TW_BOOL)&itemList[index];
-          }
-          break;
+
+    for (TW_UINT32 i = 0; i < numItems; ++i) {
+        Napi::Value item = itemList.Get(i);
+        switch (itemType) {
+            case TWTY_INT8:
+                ((TW_INT8*)pEnum->ItemList)[i] = (TW_INT8)item.As<Napi::Number>().Int32Value();
+                break;
+            case TWTY_INT16:
+                ((TW_INT16*)pEnum->ItemList)[i] = (TW_INT16)item.As<Napi::Number>().Int32Value();
+                break;
+            case TWTY_INT32:
+                ((TW_INT32*)pEnum->ItemList)[i] = (TW_INT32)item.As<Napi::Number>().Int32Value();
+                break;
+            case TWTY_UINT8:
+                ((TW_UINT8*)pEnum->ItemList)[i] = (TW_UINT8)item.As<Napi::Number>().Uint32Value();
+                break;
+            case TWTY_UINT16:
+                ((TW_UINT16*)pEnum->ItemList)[i] = (TW_UINT16)item.As<Napi::Number>().Uint32Value();
+                break;
+            case TWTY_UINT32:
+                ((TW_UINT32*)pEnum->ItemList)[i] = (TW_UINT32)item.As<Napi::Number>().Uint32Value();
+                break;
+            case TWTY_BOOL:
+                ((TW_BOOL*)pEnum->ItemList)[i] = (TW_BOOL)item.As<Napi::Boolean>().Value();
+                break;
+        }
     }
+
     std::cout << "start unlockMemory:" << std::endl;
     unlockMemory(cap.hContainer);
     std::cout << "start entry:" << std::endl;
