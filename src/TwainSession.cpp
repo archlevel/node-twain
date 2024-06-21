@@ -518,12 +518,12 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, Napi::Array array) {
 
     std::cout << "start lockMemory:" << std::endl;
     pTW_ARRAY pArray = (pTW_ARRAY) lockMemory(cap.hContainer);
-    pArray->ItemType = type;
+    pArray->ItemType = itemType;
     pArray->NumItems = numItems;
     std::cout << "set pArray->ItemType= "<< pArray->ItemType << std::endl;
     for (TW_UINT32 i = 0; i < numItems; ++i) {
         Napi::Value item = array.Get(i + 1);  // 跳过第一个元素
-        switch (type) {
+        switch (itemType) {
             case TWTY_INT8:
                 ((TW_INT8*)pArray->ItemList)[i] = (TW_INT8)item.As<Napi::Number>().Int32Value();
                 break;
