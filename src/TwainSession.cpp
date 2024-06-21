@@ -432,7 +432,7 @@ TW_UINT16 TwainSession::setRangeCap(TW_CAPABILITY &cap,TW_UINT16 type, Napi::Obj
     }
     std::cout << "start lockMemory:" << std::endl;
     pTW_RANGE pRange = (pTW_RANGE) lockMemory(cap.hContainer);
-    pRange->ItemType = type;
+    pRange->ItemType = TWTY_FIX32;
     pRange->MinValue = obj.Get("minValue").As<Napi::Number>().Uint32Value();
     pRange->MaxValue = obj.Get("maxValue").As<Napi::Number>().Uint32Value();
     pRange->StepSize = obj.Get("stepSize").As<Napi::Number>().Uint32Value();
