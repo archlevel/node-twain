@@ -323,27 +323,27 @@ TW_UINT16 TwainSession::setCap(TW_UINT16 Cap, TW_UINT16 type,Napi::Value value) 
     cap.ConType = type;
     cap.hContainer = NULL;
 
-    if (value.IsObject()) {
-        std::cout << "setCap IsObject:" << std::endl;
-        Napi::Object obj = value.As<Napi::Object>();
-        if (type == TWON_ENUMERATION) {
-            rc = setEnumerationCap(cap,type, obj);
-        } else if (type == TWON_RANGE) {
-            rc = setRangeCap(cap,type, obj);
-        } else if (type == TWON_ONEVALUE) {
-            rc = setOneValueCap(cap,type, obj);
-        } else if (type == TWON_ICONID || type == TWON_DSMID || type == TWON_DSMCODEID ||
-                   type == TWON_DONTCARE8 || type == TWON_DONTCARE16 || type == TWON_DONTCARE32 ||
-                   type == TWTY_BOOL || type == TWTY_STR32 || type == TWTY_STR64 || type == TWTY_STR128 || type == TWTY_STR255) {
-           rc = setSpecialCap(cap, type, obj);
-        } else {
-            std::cerr << "Unsupported object type" << std::endl;
-        }
-    } else if (value.IsArray()) {
-            std::cout << "setCap IsObject:" << std::endl;
-        rc = setArrayCap(cap, type, value.As<Napi::Array>());
+    Napi::Object obj = value.As<Napi::Object>();
+
+    if (type == TWON_ENUMERATION) {
+        std::cout << "setCap enum:" << std::endl;
+        rc = setEnumerationCap(cap,type, obj);
+    } else if (type == TWON_RANGE) {
+        std::cout << "setCap range:" << std::endl;
+        rc = setRangeCap(cap,type, obj);
+    } else if (type == TWON_ONEVALUE) {
+        std::cout << "setCap one:" << std::endl;
+        rc = setOneValueCap(cap,type, obj);
+    } else if (type == TWON_ICONID || type == TWON_DSMID || type == TWON_DSMCODEID ||
+               type == TWON_DONTCARE8 || type == TWON_DONTCARE16 || type == TWON_DONTCARE32 ||
+               type == TWTY_BOOL || type == TWTY_STR32 || type == TWTY_STR64 || type == TWTY_STR128 || type == TWTY_STR255) {
+       std::cout << "setCap special:" << std::endl;
+       rc = setSpecialCap(cap, type, obj);
+    } else if(type == TWON_ARRAY){
+        std::cout << "setCap array:" << std::endl;
+                rc = setArrayCap(cap, type, value.As<Napi::Array>());
     } else {
-        std::cerr << "Unsupported value type" << std::endl;
+        std::cerr << "Unsupported object type" << std::endl;
     }
 
     if (cap.hContainer != NULL) {
