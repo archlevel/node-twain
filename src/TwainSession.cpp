@@ -360,7 +360,7 @@ TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap, Napi::Object obj) 
     Napi::Array itemList = obj.Get("itemList").As<Napi::Array>();
     TW_UINT32 numItems = itemList.Length();
     TW_UINT32 itemSize = sizeof(TW_UINT32); // 默认项大小为 TW_UINT32，你可以根据不同的类型进行调整
-    switch (type) {
+    switch (itemType) {
         case TWTY_INT8:
             itemSize = sizeof(TW_INT8);
             break;
@@ -396,7 +396,7 @@ TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap, Napi::Object obj) 
 
     std::cout << "start lockMemory:" << std::endl;
     pTW_ENUMERATION pEnum = (pTW_ENUMERATION) lockMemory(cap.hContainer);
-    pEnum->ItemType = type;
+    pEnum->ItemType = itemType;
     pEnum->NumItems = numItems;
     pEnum->CurrentIndex = currentIndex;
     pEnum->DefaultIndex = defaultIndex;
@@ -453,7 +453,8 @@ TW_UINT16 TwainSession::setRangeCap(TW_CAPABILITY &cap, Napi::Object obj) {
     }
     std::cout << "start lockMemory:" << std::endl;
     pTW_RANGE pRange = (pTW_RANGE) lockMemory(cap.hContainer);
-    pRange->ItemType = static_cast<TW_UINT16>(obj.Get("itemType").As<Napi::Number>().Uint32Value());
+    TW_UINT16 itemType = static_cast<TW_UINT16>(obj.Get("itemType").As<Napi::Number>().Uint32Value());
+    pRange->ItemType = itemType;
     pRange->MinValue = obj.Get("minValue").As<Napi::Number>().Uint32Value();
     pRange->MaxValue = obj.Get("maxValue").As<Napi::Number>().Uint32Value();
     pRange->StepSize = obj.Get("stepSize").As<Napi::Number>().Uint32Value();
