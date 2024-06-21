@@ -336,7 +336,7 @@ TW_UINT16 TwainSession::setCap(TW_UINT16 Cap, TW_UINT16 type,Napi::Value value) 
         rc = setOneValueCap(cap, obj);
     } else if(type == TWON_ARRAY){
         std::cout << "setCap array:" << std::endl;
-                rc = setArrayCap(cap, type, value.As<Napi::Array>());
+        rc = setArrayCap(cap, value.As<Napi::Array>());
     } else {
         std::cerr << "Unsupported object type" << std::endl;
     }
@@ -571,7 +571,6 @@ TW_UINT16 TwainSession::setOneValueCap(TW_CAPABILITY &cap,TW_UINT16 itemType, Na
     }
     std::cout << "start lockMemory:" << std::endl;
     pTW_ONEVALUE pOneValue = (pTW_ONEVALUE) lockMemory(cap.hContainer);
-    pTW_ONEVALUE pOneValue = (pTW_ONEVALUE)lockMemory(cap.hContainer);
     pOneValue->ItemType = itemType;
 
     switch (itemType) {
