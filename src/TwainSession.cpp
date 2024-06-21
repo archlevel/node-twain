@@ -494,25 +494,28 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, TW_UINT16 type, Napi::Ar
     pArray->NumItems = numItems;
     std::cout << "set pArray->ItemType= "<< pArray->ItemType << std::endl;
     for (TW_UINT32 i = 0; i < numItems; ++i) {
-
-        switch (pArray->ItemType) {
+        Napi::Value item = array.Get(i);
+        switch (type) {
             case TWTY_INT8:
-                pArray->ItemList[i] = (TW_INT8)&array[i];
+                ((TW_INT8*)pArray->ItemList)[i] = (TW_INT8)item.As<Napi::Number>().Int32Value();
                 break;
             case TWTY_INT16:
-                pArray->ItemList[i] = (TW_INT16)&array[i];
+                ((TW_INT16*)pArray->ItemList)[i] = (TW_INT16)item.As<Napi::Number>().Int32Value();
                 break;
             case TWTY_INT32:
-                pArray->ItemList[i] = (TW_INT32)&array[i];
+                ((TW_INT32*)pArray->ItemList)[i] = (TW_INT32)item.As<Napi::Number>().Int32Value();
                 break;
             case TWTY_UINT8:
-                pArray->ItemList[i] = (TW_UINT8)&array[i];
+                ((TW_UINT8*)pArray->ItemList)[i] = (TW_UINT8)item.As<Napi::Number>().Uint32Value();
                 break;
             case TWTY_UINT16:
-                pArray->ItemList[i] = (TW_UINT16)&array[i];
+                ((TW_UINT16*)pArray->ItemList)[i] = (TW_UINT16)item.As<Napi::Number>().Uint32Value();
                 break;
             case TWTY_UINT32:
-                pArray->ItemList[i] = (TW_UINT32)&array[i];
+                ((TW_UINT32*)pArray->ItemList)[i] = (TW_UINT32)item.As<Napi::Number>().Uint32Value();
+                break;
+            case TWTY_BOOL:
+                ((TW_BOOL*)pArray->ItemList)[i] = (TW_BOOL)item.As<Napi::Boolean>().Value();
                 break;
         }
     }
