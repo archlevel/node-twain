@@ -379,6 +379,9 @@ TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap, Napi::Object obj) 
         case TWTY_UINT32:
             itemSize = sizeof(TW_UINT32);
             break;
+        case TW_FIX32:
+            itemSize = sizeof(TW_FIX32);
+            break;
         case TWTY_BOOL:
             itemSize = sizeof(TW_BOOL);
             break;
@@ -423,6 +426,9 @@ TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap, Napi::Object obj) 
                 break;
             case TWTY_UINT32:
                 ((TW_UINT32*)pEnum->ItemList)[i] = (TW_UINT32)item.As<Napi::Number>().Uint32Value();
+                break;
+            case TW_FIX32:
+                ((TW_FIX32*)pEnum->ItemList)[i] = floatToFIX32(item.As<Napi::Number>().DoubleValue());// ???
                 break;
             case TWTY_BOOL:
                 ((TW_BOOL*)pEnum->ItemList)[i] = (TW_BOOL)item.As<Napi::Boolean>().Value();
@@ -501,6 +507,9 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, Napi::Array array) {
         case TWTY_UINT32:
             itemSize = sizeof(TW_UINT32);
             break;
+        case TW_FIX32:
+            itemSize = sizeof(TW_FIX32);
+            break;
         case TWTY_BOOL:
             itemSize = sizeof(TW_BOOL);
             break;
@@ -541,6 +550,9 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, Napi::Array array) {
                 break;
             case TWTY_UINT32:
                 ((TW_UINT32*)pArray->ItemList)[i] = (TW_UINT32)item.As<Napi::Number>().Uint32Value();
+                break;
+            case TW_FIX32:
+                ((TW_FIX32*)pArray->ItemList)[i] = floatToFIX32(item.As<Napi::Number>().DoubleValue());// ???
                 break;
             case TWTY_BOOL:
                 ((TW_BOOL*)pArray->ItemList)[i] = (TW_BOOL)item.As<Napi::Boolean>().Value();
@@ -596,6 +608,9 @@ TW_UINT16 TwainSession::setOneValueCap(TW_CAPABILITY &cap, Napi::Object obj) {
         case TWTY_BOOL:
             pOneValue->Item = obj.Get("value").As<Napi::Boolean>().Value() ? 1 : 0;
             break;
+        case TWTY_FIX32:
+            TW_FIX32 fix32Value = floatToFIX32(obj.Get("value").As<Napi::Number>().DoubleValue());
+            pOneValue.Item = *(TW_UINT32*)&fix32Value;
         case TWTY_STR32:
         case TWTY_STR64:
         case TWTY_STR128:
@@ -2106,6 +2121,9 @@ TW_FIX32 TwainSession::floatToFix32(float floater) {
     return fix32;
 }
 
-float TwainSession::fix32ToFloat(const TW_FIX32& fix32) {
-    return float(fix32.Whole) + float(fix32.Frac / 65536.0);
+TW_FIX32 floatToFIX32(double value) {
+    TW_FIX32 fix32;
+    fix32.Whole = static_cast<TW_INT16>(value);
+    fix32.Frac = static_cast<TW_UINT16>((value - fix32.Whole) * 65536);
+    return fix32;
 }
