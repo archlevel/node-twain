@@ -428,7 +428,7 @@ TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap, Napi::Object obj) 
                 ((TW_UINT32*)pEnum->ItemList)[i] = (TW_UINT32)item.As<Napi::Number>().Uint32Value();
                 break;
             case TWTY_FIX32:
-                ((TW_FIX32*)pEnum->ItemList)[i] = floatToFIX32(item.As<Napi::Number>().DoubleValue());// ???
+                ((TW_FIX32*)pEnum->ItemList)[i] = doubleToFix32(item.As<Napi::Number>().DoubleValue());// ???
                 break;
             case TWTY_BOOL:
                 ((TW_BOOL*)pEnum->ItemList)[i] = (TW_BOOL)item.As<Napi::Boolean>().Value();
@@ -552,7 +552,7 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, Napi::Array array) {
                 ((TW_UINT32*)pArray->ItemList)[i] = (TW_UINT32)item.As<Napi::Number>().Uint32Value();
                 break;
             case TWTY_FIX32:
-                ((TW_FIX32*)pArray->ItemList)[i] = floatToFIX32(item.As<Napi::Number>().DoubleValue());// ???
+                ((TW_FIX32*)pArray->ItemList)[i] = doubleToFix32(item.As<Napi::Number>().DoubleValue());// ???
                 break;
             case TWTY_BOOL:
                 ((TW_BOOL*)pArray->ItemList)[i] = (TW_BOOL)item.As<Napi::Boolean>().Value();
@@ -609,8 +609,8 @@ TW_UINT16 TwainSession::setOneValueCap(TW_CAPABILITY &cap, Napi::Object obj) {
             pOneValue->Item = obj.Get("value").As<Napi::Boolean>().Value() ? 1 : 0;
             break;
         case TWTY_FIX32:
-            TW_FIX32 fix32Value = floatToFIX32(obj.Get("value").As<Napi::Number>().DoubleValue());
-            pOneValue.Item = *(TW_UINT32*)&fix32Value;
+            TW_FIX32 fix32Value = doubleToFix32(obj.Get("value").As<Napi::Number>().DoubleValue());
+            std::memcpy(&(pOneValue->Item), &fix32Value, sizeof(TW_FIX32));
         case TWTY_STR32:
         case TWTY_STR64:
         case TWTY_STR128:
@@ -2112,7 +2112,7 @@ int TwainSession::getTWTypeSize(const TW_UINT16 itemType) {
     return typeSize;
 }
 
-TW_FIX32 TwainSession::floatToFix32(double floater) {
+TW_FIX32 TwainSession::doubleToFix32(const double floater) {
     TW_FIX32 fix32;
     TW_BOOL sign = (floater < 0) ? TRUE : FALSE;
     TW_INT32 value = (TW_INT32) (floater * 65536.0 + (sign ? (-0.5) : 0.5));
