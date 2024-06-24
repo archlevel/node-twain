@@ -2112,18 +2112,11 @@ int TwainSession::getTWTypeSize(const TW_UINT16 itemType) {
     return typeSize;
 }
 
-TW_FIX32 TwainSession::floatToFix32(float floater) {
+TW_FIX32 TwainSession::floatToFix32(double floater) {
     TW_FIX32 fix32;
     TW_BOOL sign = (floater < 0) ? TRUE : FALSE;
     TW_INT32 value = (TW_INT32) (floater * 65536.0 + (sign ? (-0.5) : 0.5));
     fix32.Whole = (TW_UINT16) (value >> 16);
     fix32.Frac = (TW_UINT16) (value & 0x0000ffffL);
-    return fix32;
-}
-
-TW_FIX32 floatToFIX32(double value) {
-    TW_FIX32 fix32;
-    fix32.Whole = static_cast<TW_INT16>(value);
-    fix32.Frac = static_cast<TW_UINT16>((value - fix32.Whole) * 65536);
     return fix32;
 }

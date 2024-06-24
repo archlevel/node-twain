@@ -144,7 +144,7 @@ private:
 
     static float fix32ToFloat(const TW_FIX32& fix32);
 
-    static TW_FIX32 floatToFix32(float floater);
+    static TW_FIX32 floatToFix32(double floater);
 };
 
 
