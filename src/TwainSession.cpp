@@ -379,7 +379,7 @@ TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap, Napi::Object obj) 
         case TWTY_UINT32:
             itemSize = sizeof(TW_UINT32);
             break;
-        case TW_FIX32:
+        case TWTY_FIX32:
             itemSize = sizeof(TW_FIX32);
             break;
         case TWTY_BOOL:
@@ -427,7 +427,7 @@ TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap, Napi::Object obj) 
             case TWTY_UINT32:
                 ((TW_UINT32*)pEnum->ItemList)[i] = (TW_UINT32)item.As<Napi::Number>().Uint32Value();
                 break;
-            case TW_FIX32:
+            case TWTY_FIX32:
                 ((TW_FIX32*)pEnum->ItemList)[i] = floatToFIX32(item.As<Napi::Number>().DoubleValue());// ???
                 break;
             case TWTY_BOOL:
@@ -507,7 +507,7 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, Napi::Array array) {
         case TWTY_UINT32:
             itemSize = sizeof(TW_UINT32);
             break;
-        case TW_FIX32:
+        case TWTY_FIX32:
             itemSize = sizeof(TW_FIX32);
             break;
         case TWTY_BOOL:
@@ -551,7 +551,7 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, Napi::Array array) {
             case TWTY_UINT32:
                 ((TW_UINT32*)pArray->ItemList)[i] = (TW_UINT32)item.As<Napi::Number>().Uint32Value();
                 break;
-            case TW_FIX32:
+            case TWTY_FIX32:
                 ((TW_FIX32*)pArray->ItemList)[i] = floatToFIX32(item.As<Napi::Number>().DoubleValue());// ???
                 break;
             case TWTY_BOOL:
