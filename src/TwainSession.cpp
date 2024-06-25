@@ -434,7 +434,7 @@ TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap, Napi::Object obj) 
                 break;
             }
             case TWTY_BOOL:
-                pEnum->ItemList[i] = item.As<Napi::Boolean>().Value() ?  1 : 0;
+                pEnum->ItemList[i] = item.As<Napi::Boolean>().Value() ? 1 : 0;
                 std::cout << "set TW_BOOL= " << (TW_BOOL)pEnum->ItemList[i] << std::endl;
                 break;
             default:
@@ -576,7 +576,7 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, Napi::Object obj) {
                 break;
             }
             case TWTY_BOOL:
-                pArray->ItemList[i] = item.As<Napi::Boolean>().Value() ? 1 : 0;
+                pArray->ItemList[i] = 1;// item.As<Napi::Boolean>().Value() ? 1 : 0;
                 std::cout << "set TW_BOOL= " << (TW_BOOL)pArray->ItemList[i] << std::endl;
                 break;
             default:
