@@ -636,10 +636,12 @@ TW_UINT16 TwainSession::setOneValueCap(TW_CAPABILITY &cap, Napi::Object obj) {
             break;
         case TWTY_BOOL:
             pOneValue->Item = obj.Get("value").As<Napi::Boolean>().Value() ? 1 : 0;
+            std::cout << "set TW_BOOL= " << (TW_BOOL)pOneValue->Item << std::endl;
             break;
         case TWTY_FIX32:
             TW_FIX32 fix32Value = doubleToFix32(obj.Get("value").As<Napi::Number>().DoubleValue());
             std::memcpy(&(pOneValue->Item), &fix32Value, sizeof(TW_FIX32));
+            break;
         case TWTY_STR32:
         case TWTY_STR64:
         case TWTY_STR128:

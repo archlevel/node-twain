@@ -181,7 +181,8 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
                     arr[index] = Napi::Number::New(env, pArray->ItemList[index]);
                     break;
                 case TWTY_BOOL:          
-                    arr[index] = Napi::Boolean::New(env, pArray->ItemList[index] == 1 ? true : false);
+                    arr[index] = Napi::Boolean::New(env, (TW_BOOL)pArray->ItemList[index] == 1 ? true : false);
+                    //std::cout << "get TW_BOOL= " << arr[index] << std::endl;
                     break;
                 default:
                     std::cerr << "Unsupported item type in TWON_ARRAY" << std::endl;
@@ -207,7 +208,8 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
                 result = Napi::Number::New(env, pOne->Item);
                 break;
             case TWTY_BOOL:
-                result =  Napi::Boolean::New(env, pOne->Item);
+                result = Napi::Boolean::New(env, (TW_BOOL)pOne->Item == 1 ? true : false);
+                std::cout << "get TW_BOOL= " << result << std::endl;
                 break;
             case TWTY_STR32: {
                 pTW_STR32 str32 = ((pTW_STR32) (&pOne->Item));
@@ -251,7 +253,8 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
                     list[index] = Napi::Number::New(env, pEnum->ItemList[index]);
                     break;
                 case TWTY_BOOL:
-                    list[index] = Napi::Boolean::New(env, pEnum->ItemList[index] == 1 ? true : false);
+                    list[index] = Napi::Boolean::New(env, (TW_BOOL)pEnum->ItemList[index] == 1 ? true : false);
+                    //std::cout << "get TW_BOOL= " << list[index] << std::endl;
                     break;
            }
         }
