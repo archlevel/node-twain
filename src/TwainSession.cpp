@@ -385,7 +385,7 @@ TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap, Napi::Object obj) 
             return TWRC_FAILURE;
     }
 
-    TW_UINT32 enumSize = sizeof(TW_ENUMERATION) + (numItems - 1) * itemSize;
+    TW_UINT32 enumSize = sizeof(TW_ENUMERATION) + (numItems * itemSize);
     std::cout << "start allocMemory:" << std::endl;
     cap.hContainer = allocMemory(enumSize);
     if (cap.hContainer == NULL) {
@@ -530,7 +530,7 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, Napi::Object obj) {
             return TWRC_FAILURE;
     }
 
-    TW_UINT32 arraySize = sizeof(TW_ARRAY) + (numItems) * itemSize;
+    TW_UINT32 arraySize = sizeof(TW_ARRAY) + (numItems * itemSize);
     std::cout << "start allocMemory:" << std::endl;
     cap.hContainer = allocMemory(arraySize);
     if (cap.hContainer == NULL) {
