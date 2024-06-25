@@ -377,18 +377,6 @@ TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap, Napi::Object obj) 
         case TWTY_FIX32:
             itemSize = sizeof(TW_FIX32);
             break;
-        case TWTY_STR32:
-            itemSize = sizeof(TW_STR32);
-            break;
-        case TWTY_STR64:
-            itemSize = sizeof(TW_STR64);
-            break;
-        case TWTY_STR128:
-            itemSize = sizeof(TW_STR128);
-            break;
-        case TWTY_STR255:
-            itemSize = sizeof(TW_STR255);
-            break;
         case TWTY_BOOL:
             itemSize = sizeof(TW_BOOL);
             break;
@@ -440,26 +428,11 @@ TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap, Napi::Object obj) 
             case TWTY_UINT32:
                 ((TW_UINT32*)pEnum->ItemList)[i] = (TW_UINT32)item.As<Napi::Number>().Uint32Value();
                 break;
-            case TWTY_FIX32:
+            case TWTY_FIX32: {
                 TW_FIX32 fix32Value = doubleToFix32(item.As<Napi::Number>().DoubleValue());
                 std::memcpy(&((TW_FIX32*)pEnum->ItemList)[i], &fix32Value, sizeof(TW_FIX32));
                 break;
-            case TWTY_STR32:
-                std::string strValue = item.As<Napi::String>().Utf8Value();
-                strcpy(reinterpret_cast<char*>(&((TW_STR32*)pEnum->ItemList)[i]), strValue.c_str());
-                break;
-            case TWTY_STR64:
-                std::string strValue = item.As<Napi::String>().Utf8Value();
-                strcpy(reinterpret_cast<char*>(&((TW_STR64*)pEnum->ItemList)[i]), strValue.c_str());
-                break;
-            case TWTY_STR128:
-                std::string strValue = item.As<Napi::String>().Utf8Value();
-                strcpy(reinterpret_cast<char*>(&((TW_STR128*)pEnum->ItemList)[i]), strValue.c_str());
-                break;
-            case TWTY_STR255:
-                std::string strValue = item.As<Napi::String>().Utf8Value();
-                strcpy(reinterpret_cast<char*>(&((TW_STR255*)pEnum->ItemList)[i]), strValue.c_str());
-                break;
+            }
             case TWTY_BOOL:
                 ((TW_BOOL*)pEnum->ItemList)[i] = item.As<Napi::Boolean>().Value() ? 1 : 0;
                 break;
@@ -549,18 +522,6 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, Napi::Object obj) {
         case TWTY_FIX32:
             itemSize = sizeof(TW_FIX32);
             break;
-        case TWTY_STR32:
-            itemSize = sizeof(TW_STR32);
-            break;
-        case TWTY_STR64:
-            itemSize = sizeof(TW_STR64);
-            break;
-        case TWTY_STR128:
-            itemSize = sizeof(TW_STR128);
-            break;
-        case TWTY_STR255:
-            itemSize = sizeof(TW_STR255);
-            break;
         case TWTY_BOOL:
             itemSize = sizeof(TW_BOOL);
             break;
@@ -608,26 +569,11 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, Napi::Object obj) {
             case TWTY_UINT32:
                 ((TW_UINT32*)pArray->ItemList)[i] = (TW_UINT32)item.As<Napi::Number>().Uint32Value();
                 break;
-            case TWTY_FIX32:
+            case TWTY_FIX32: {
                 TW_FIX32 fix32Value = doubleToFix32(item.As<Napi::Number>().DoubleValue());
                 std::memcpy(&((TW_FIX32*)pArray->ItemList)[i], &fix32Value, sizeof(TW_FIX32));
                 break;
-            case TWTY_STR32:
-                std::string strValue = item.As<Napi::String>().Utf8Value();
-                strcpy(reinterpret_cast<char*>(&((TW_STR32*)pEnum->ItemList)[i]), strValue.c_str());
-                break;
-            case TWTY_STR64:
-                std::string strValue = item.As<Napi::String>().Utf8Value();
-                strcpy(reinterpret_cast<char*>(&((TW_STR64*)pEnum->ItemList)[i]), strValue.c_str());
-                break;
-            case TWTY_STR128:
-                std::string strValue = item.As<Napi::String>().Utf8Value();
-                strcpy(reinterpret_cast<char*>(&((TW_STR128*)pEnum->ItemList)[i]), strValue.c_str());
-                break;
-            case TWTY_STR255:
-                std::string strValue = item.As<Napi::String>().Utf8Value();
-                strcpy(reinterpret_cast<char*>(&((TW_STR255*)pEnum->ItemList)[i]), strValue.c_str());
-                break;
+            }
             case TWTY_BOOL:
                 ((TW_BOOL*)pArray->ItemList)[i] = item.As<Napi::Boolean>().Value() ? 1 : 0;
                 break;
