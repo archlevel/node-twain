@@ -429,7 +429,7 @@ TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap, Napi::Object obj) 
                 std::memcpy(&(pEnum->ItemList[i]), &fix32Value, sizeof(TW_FIX32));
                 break;
             case TWTY_BOOL:
-                pEnum->ItemList[i] = (TW_BOOL)item.As<Napi::Boolean>().Value();
+                pEnum->ItemList[i] = item.As<Napi::Boolean>().Value() ? 1 : 0;
                 break;
         }
         std::cout << "set index= " << i << ", pEnum->ItemType= " << pEnum->ItemType << "pEnum->ItemList" << pEnum->ItemList[i] << std::endl;
@@ -559,7 +559,7 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, Napi::Object obj) {
                 std::memcpy(&(pArray->ItemList[i]), &fix32Value, sizeof(TW_FIX32));
                 break;
             case TWTY_BOOL:
-                pArray->ItemList[i] = (TW_BOOL)item.As<Napi::Boolean>().Value();
+                pArray->ItemList[i] = item.As<Napi::Boolean>().Value() ? 1 : 0;
                 break;
         }
 
