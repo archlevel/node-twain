@@ -404,7 +404,7 @@ TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap, Napi::Object obj) 
 
     for (TW_UINT32 i = 0; i < numItems; ++i) {
         Napi::Value item = itemList.Get(i);
-        std::cout << "set index= " << i << ", pEnum->ItemType= " << pEnum->ItemType << "pEnum->ItemList" << item << std::endl;
+        
         switch (itemType) {
             case TWTY_INT8:
                 pEnum->ItemList[i] = (TW_INT8)item.As<Napi::Number>().Int32Value();
@@ -432,6 +432,7 @@ TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap, Napi::Object obj) 
                 pEnum->ItemList[i] = (TW_BOOL)item.As<Napi::Boolean>().Value();
                 break;
         }
+        std::cout << "set index= " << i << ", pEnum->ItemType= " << pEnum->ItemType << "pEnum->ItemList" << pEnum->ItemList[i] << std::endl;
     }
 
     std::cout << "start unlockMemory:" << std::endl;
@@ -533,7 +534,7 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, Napi::Object obj) {
     std::cout << "set pArray->ItemType= "<< pArray->ItemType << std::endl;
     for (TW_UINT32 i = 0; i < numItems; ++i) {
         Napi::Value item = array.Get(i);
-        std::cout << "set index= " << i << ", pArray->ItemType= " << pArray->ItemType << "pArray->ItemList" << item << std::endl;
+        
         switch (itemType) {
             case TWTY_INT8:
                 pArray->ItemList[i] = (TW_INT8)item.As<Napi::Number>().Int32Value();
@@ -561,6 +562,8 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, Napi::Object obj) {
                 pArray->ItemList[i] = (TW_BOOL)item.As<Napi::Boolean>().Value();
                 break;
         }
+
+        std::cout << "set index= " << i << ", pArray->ItemType= " << pArray->ItemType << "pArray->ItemList" << pArray->ItemList[i] << std::endl;
     }
     std::cout << "start unlockMemory:" << std::endl;
     unlockMemory(cap.hContainer);
