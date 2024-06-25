@@ -133,6 +133,6 @@ describe('quick', () => {
         session.setCapability(cap, TWON_ENUMERATION, {"itemType": 1,"defaultValue": 1,"currentValue": 1,"itemList":[1,2] })
 
         // pArrayValue
-        session.setCapability(cap, TWON_ARRAY, [1,1,2,3]);//数组第一个元素为itemType，后面元素为数据值
+        session.setCapability(cap, TWON_ARRAY, {"itemType": 1,"itemList":[1,1,2,3]});//数组第一个元素为itemType，后面元素为数据值
     })
 })

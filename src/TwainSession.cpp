@@ -336,7 +336,7 @@ TW_UINT16 TwainSession::setCap(TW_UINT16 Cap, TW_UINT16 type,Napi::Value value) 
         rc = setOneValueCap(cap, obj);
     } else if(type == TWON_ARRAY){
         std::cout << "setCap array:" << std::endl;
-        rc = setArrayCap(cap, value.As<Napi::Array>());
+        rc = setArrayCap(cap, obj);
     } else {
         std::cerr << "Unsupported object type" << std::endl;
     }
@@ -478,11 +478,14 @@ TW_UINT16 TwainSession::setRangeCap(TW_CAPABILITY &cap, Napi::Object obj) {
     return rc;
 }
 
-TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, Napi::Array array) {
+TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, Napi::Object obj) {
+    //------
+    TW_UINT16 itemType = static_cast<TW_UINT16>(obj.Get("itemType").As<Napi::Number>().Uint32Value());
     std::cout << "start setArrayCap:" << std::endl;
     cap.ConType = TWON_ARRAY;
-    TW_UINT16 itemType = static_cast<TW_UINT16>(array.Get((uint32_t)0).As<Napi::Number>().Uint32Value());
-    TW_UINT32 numItems = array.Length() - 1;  // 减去第一个元素（itemType）
+    Napi::Array array = obj.Get("itemList").As<Napi::Array>();
+
+    TW_UINT32 numItems = array.Length();  // 减去第一个元素（itemType）
     TW_UINT32 itemSize = sizeof(TW_UINT32); // 默认项大小为 TW_UINT32，你可以根据不同的类型进行调整
     switch (itemType) {
         case TWTY_INT8:
@@ -514,7 +517,7 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, Napi::Array array) {
             return TWRC_FAILURE;
     }
 
-    TW_UINT32 arraySize = sizeof(TW_ARRAY) + (numItems - 1) * itemSize;
+    TW_UINT32 arraySize = sizeof(TW_ARRAY) + (numItems) * itemSize;
     std::cout << "start allocMemory:" << std::endl;
     cap.hContainer = allocMemory(arraySize);
     if (cap.hContainer == NULL) {
@@ -527,7 +530,7 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, Napi::Array array) {
     pArray->NumItems = numItems;
     std::cout << "set pArray->ItemType= "<< pArray->ItemType << std::endl;
     for (TW_UINT32 i = 0; i < numItems; ++i) {
-        Napi::Value item = array.Get(i + 1);  // 跳过第一个元素
+        Napi::Value item = array.Get(i);  // 跳过第一个元素
         switch (itemType) {
             case TWTY_INT8:
                 ((TW_INT8*)pArray->ItemList)[i] = (TW_INT8)item.As<Napi::Number>().Int32Value();
