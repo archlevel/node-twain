@@ -181,7 +181,7 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
                     arr[index] = Napi::Number::New(env, pArray->ItemList[index]);
                     break;
                 case TWTY_BOOL:
-                    arr[index] = Napi::Boolean::New(env, pOne->Item);
+                    arr[index] = Napi::Boolean::New(env, pArray->ItemList[index]);
                     break;
             }
         }
@@ -234,25 +234,23 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
         Napi::Object enumResult = Napi::Object::New(env);
         Napi::Array list = Napi::Array::New(env, pEnum->NumItems);
         std::cout << "get pEnum->ItemType= "<< pEnum->ItemType << std::endl;
-        switch (pEnum->ItemType) {
-            case TWTY_INT8:
-            case TWTY_INT16:
-            case TWTY_INT32:
-            case TWTY_UINT8:
-            case TWTY_UINT16:
-            case TWTY_UINT32:
-            case TWTY_FIX32:
-                for (TW_UINT16 index = 0; index < pEnum->NumItems; index++){
+        for (TW_UINT16 index = 0; index < pEnum->NumItems; index++){
+            switch (pEnum->ItemType) {
+                case TWTY_INT8:
+                case TWTY_INT16:
+                case TWTY_INT32:
+                case TWTY_UINT8:
+                case TWTY_UINT16:
+                case TWTY_UINT32:
+                case TWTY_FIX32:
                     list[index] = Napi::Number::New(env, pEnum->ItemList[index]);
-                }
-                break;
-            case TWTY_BOOL:
-                for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
+                    break;
+                case TWTY_BOOL:
                     list[index] = Napi::Boolean::New(env, pEnum->ItemList[index]);
                     break;
-                }
-                break;
+           }
         }
+
         enumResult.Set("currentIndex", pEnum->CurrentIndex);
         enumResult.Set("defaultIndex", pEnum->DefaultIndex);
         enumResult.Set("itemList", list);
