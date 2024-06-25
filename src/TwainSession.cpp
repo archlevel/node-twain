@@ -341,10 +341,6 @@ TW_UINT16 TwainSession::setCap(TW_UINT16 Cap, TW_UINT16 type,Napi::Value value) 
         std::cerr << "Unsupported object type" << std::endl;
     }
 
-    if (cap.hContainer != NULL) {
-        freeMemory(cap.hContainer);
-    }
-
     return rc;
 }
 
@@ -445,7 +441,7 @@ TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap, Napi::Object obj) 
     if (cap.hContainer != NULL) {
         freeMemory(cap.hContainer);
     }
-
+    std::cout << "after freeMemory:" << std::endl;
     return rc;
 }
 
@@ -478,7 +474,7 @@ TW_UINT16 TwainSession::setRangeCap(TW_CAPABILITY &cap, Napi::Object obj) {
     if (cap.hContainer != NULL) {
         freeMemory(cap.hContainer);
     }
-
+    std::cout << "after freeMemory:" << std::endl;
     return rc;
 }
 
@@ -568,7 +564,7 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, Napi::Array array) {
     if (cap.hContainer != NULL) {
         freeMemory(cap.hContainer);
     }
-
+    std::cout << "after freeMemory:" << std::endl;
     return rc;
 }
 
@@ -635,7 +631,7 @@ TW_UINT16 TwainSession::setOneValueCap(TW_CAPABILITY &cap, Napi::Object obj) {
     if (cap.hContainer != NULL) {
         freeMemory(cap.hContainer);
     }
-
+    std::cout << "after freeMemory:" << std::endl;
     return rc;
 }
 
