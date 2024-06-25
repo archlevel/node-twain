@@ -183,6 +183,10 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
                 case TWTY_BOOL:
                     arr[index] = Napi::Boolean::New(env, pArray->ItemList[index]);
                     break;
+                default:
+                    std::cerr << "Unsupported item type in TWON_ARRAY" << std::endl;
+                    session.unlockMemory(cap.hContainer);
+                    return Napi::Boolean::New(env, false);
             }
         }
         session.unlockMemory(cap.hContainer);
