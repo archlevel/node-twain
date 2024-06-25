@@ -434,7 +434,7 @@ TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap, Napi::Object obj) 
                 break;
             }
             case TWTY_BOOL:
-                ((TW_BOOL*)pEnum->ItemList)[i] = item.As<Napi::Boolean>().Value() ? 1 : 0;
+                ((TW_BOOL*)pEnum->ItemList)[i] = item.As<Napi::Boolean>().Value();
                 break;
             default:
                 std::cerr << "Unsupported item type in loop" << std::endl;
@@ -575,7 +575,7 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, Napi::Object obj) {
                 break;
             }
             case TWTY_BOOL:
-                ((TW_BOOL*)pArray->ItemList)[i] = item.As<Napi::Boolean>().Value() ? 1 : 0;
+                ((TW_BOOL*)pArray->ItemList)[i] = item.As<Napi::Boolean>().Value();
                 break;
             default:
                 std::cerr << "Unsupported item type in loop" << std::endl;
