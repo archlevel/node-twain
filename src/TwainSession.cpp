@@ -633,7 +633,7 @@ TW_UINT16 TwainSession::setOneValueCap(TW_CAPABILITY &cap, Napi::Object obj) {
             pOneValue->Item = obj.Get("value").As<Napi::Number>().Uint32Value();
             break;
         case TWTY_BOOL:
-            pOneValue->Item = obj.Get("value").As<Napi::Boolean>().Value() ? 1 : 0;
+            pOneValue->Item = obj.Get("value").As<Napi::Boolean>().Value();
             break;
         case TWTY_FIX32:
             TW_FIX32 fix32Value = doubleToFix32(obj.Get("value").As<Napi::Number>().DoubleValue());
