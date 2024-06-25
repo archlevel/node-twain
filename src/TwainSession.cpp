@@ -581,7 +581,7 @@ TW_UINT16 TwainSession::setOneValueCap(TW_CAPABILITY &cap, Napi::Object obj) {
     std::cout << "start lockMemory:" << std::endl;
     pTW_ONEVALUE pOneValue = (pTW_ONEVALUE) lockMemory(cap.hContainer);
     pOneValue->ItemType = itemType;
-
+    std::cout << "set pOneValue->ItemType= " << pOneValue->ItemType << std::endl;
     switch (itemType) {
         case TWTY_INT8:
             pOneValue->Item = obj.Get("value").As<Napi::Number>().Int32Value();
