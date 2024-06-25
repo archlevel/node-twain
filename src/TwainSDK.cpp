@@ -172,17 +172,29 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
             std::cout << "get index= "<< index << ", pArray->ItemType= " << pArray->ItemType << "pArray->ItemList" << pArray->ItemList[index] << std::endl;
             switch (pArray->ItemType) {
                 case TWTY_INT8:
+                    arr[index] = ((pTW_INT8)(&pArray->ItemList))[index];
+                    break;
                 case TWTY_INT16:
+                    arr[index] = ((pTW_INT16)(&pArray->ItemList))[index];
+                    break;
                 case TWTY_INT32:
+                    arr[index] = ((pTW_INT32)(&pArray->ItemList))[index];
+                    break;
                 case TWTY_UINT8:
+                    arr[index] = ((pTW_UINT8)(&pArray->ItemList))[index];
+                    break;
                 case TWTY_UINT16:
+                    arr[index] = ((pTW_UINT16)(&pArray->ItemList))[index];
+                    break;
                 case TWTY_UINT32:
+                    arr[index] = ((pTW_UINT32)(&pArray->ItemList))[index];
+                    break;
                 case TWTY_FIX32:
-                    arr[index] = Napi::Number::New(env, pArray->ItemList[index]);
+                    arr[index] = ((pTW_FIX32)(&pArray->ItemList))[index];//Napi::Number::New(env, pArray->ItemList[index]);
                     break;
                 case TWTY_BOOL:
                     std::cout << "get TW_BOOL= " << (TW_BOOL)pArray->ItemList[index] << std::endl;
-                    arr[index] = Napi::Boolean::New(env, (TW_BOOL)pArray->ItemList[index] == 1 ? true : false);
+                    arr[index] = ((pTW_BOOL)(&pArray->ItemList))[index];//Napi::Boolean::New(env, (TW_BOOL)pArray->ItemList[index] == 1 ? true : false);
                     break;
                 default:
                     std::cerr << "Unsupported item type in TWON_ARRAY" << std::endl;
@@ -244,17 +256,29 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
             std::cout << "get index= " << index << ", pEnum->ItemType= " << pEnum->ItemType << "pEnum->ItemList" << pEnum->ItemList[index] << std::endl;
             switch (pEnum->ItemType) {
                 case TWTY_INT8:
+                    list[index] = ((pTW_INT8)(&pEnum->ItemList))[index];
+                    break;
                 case TWTY_INT16:
+                    list[index] = ((pTW_INT16)(&pEnum->ItemList))[index];
+                    break;
                 case TWTY_INT32:
+                    list[index] = ((pTW_INT32)(&pEnum->ItemList))[index];
+                    break;
                 case TWTY_UINT8:
+                    list[index] = ((pTW_UINT8)(&pEnum->ItemList))[index];
+                    break;
                 case TWTY_UINT16:
+                    list[index] = ((pTW_UINT16)(&pEnum->ItemList))[index];
+                    break;
                 case TWTY_UINT32:
+                    list[index] = ((pTW_UINT32)(&pEnum->ItemList))[index];
+                    break;
                 case TWTY_FIX32:
-                    list[index] = Napi::Number::New(env, pEnum->ItemList[index]);
+                    list[index] = ((pTW_FIX32)(&pEnum->ItemList))[index];//Napi::Number::New(env, pEnum->ItemList[index]);
                     break;
                 case TWTY_BOOL:
-                    std::cout << "get TW_BOOL= " << (TW_BOOL)pEnum->ItemList[index] << std::endl;
-                    list[index] = Napi::Boolean::New(env, (TW_BOOL)pEnum->ItemList[index] == 1 ? true : false);
+                    std::cout << "get TW_BOOL= " << ((pTW_BOOL)(&pEnum->ItemList)) << std::endl;
+                    list[index] = ((pTW_BOOL)(&pEnum->ItemList))[index];//Napi::Boolean::New(env, (TW_BOOL)pEnum->ItemList[index] == 1 ? true : false);
                     break;
            }
         }
