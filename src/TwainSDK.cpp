@@ -242,16 +242,28 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
             std::cout << "get index= " << index << ", pEnum->ItemType= " << pEnum->ItemType << "pEnum->ItemList" << pEnum->ItemList[index] << std::endl;
             switch (pEnum->ItemType) {
                 case TWTY_INT8:
+                    list[index] = ((pTW_INT8)(&pEnum->ItemList))[index];
+                    break;
                 case TWTY_INT16:
+                    list[index] = ((pTW_INT16)(&pEnum->ItemList))[index];
+                    break;
                 case TWTY_INT32:
+                    list[index] = ((pTW_INT32)(&pEnum->ItemList))[index];
+                    break;
                 case TWTY_UINT8:
+                    list[index] = ((pTW_UINT8)(&pEnum->ItemList))[index];
+                    break;
                 case TWTY_UINT16:
+                    list[index] = ((pTW_UINT16)(&pEnum->ItemList))[index];
+                    break;
                 case TWTY_UINT32:
+                    list[index] = ((pTW_UINT32)(&pEnum->ItemList))[index];
+                    break;
                 case TWTY_FIX32:
-                    list[index] = Napi::Number::New(env, pEnum->ItemList[index]);
+                    list[index] = ((pTW_UINT32)(&pEnum->ItemList))[index];
                     break;
                 case TWTY_BOOL:
-                    list[index] = Napi::Boolean::New(env, pEnum->ItemList[index]);
+                    list[index] = ((pTW_BOOL)(&pEnum->ItemList))[index];
                     break;
            }
         }
