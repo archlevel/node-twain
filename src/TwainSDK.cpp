@@ -180,6 +180,9 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
                 case TWTY_FIX32:
                     arr[index] = Napi::Number::New(env, pArray->ItemList[index]);
                     break;
+                case TWTY_BOOL:
+                    arr[index] = Napi::Boolean::New(env, pOne->Item);
+                    break;
             }
         }
         session.unlockMemory(cap.hContainer);
@@ -245,7 +248,8 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
                 break;
             case TWTY_BOOL:
                 for (TW_UINT16 index = 0; index < pEnum->NumItems; index++) {
-                    list[index] = pEnum->ItemList[index];
+                    list[index] = Napi::Boolean::New(env, pEnum->ItemList[index]);
+                    break;
                 }
                 break;
         }
