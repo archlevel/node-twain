@@ -73,7 +73,7 @@ public:
 
     TW_UINT16 setRangeCap(TW_CAPABILITY& cap,Napi::Object obj);
 
-    TW_UINT16 setArrayCap(TW_CAPABILITY& cap, Napi::Array array);
+    TW_UINT16 setArrayCap(TW_CAPABILITY& cap, Napi::Object obj);
 
     TW_UINT16 setOneValueCap(TW_CAPABILITY& cap,Napi::Object obj);
 
