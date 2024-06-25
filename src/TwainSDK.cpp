@@ -239,7 +239,7 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
             case TWTY_UINT16:
             case TWTY_UINT32:
             case TWTY_FIX32:
-                for (TW_UINT16 index = 0; index < pEnum->NumItems; index++)
+                for (TW_UINT16 index = 0; index < pEnum->NumItems; index++){
                     list[index] = Napi::Number::New(env, pEnum->ItemList[index]);
                 }
                 break;
