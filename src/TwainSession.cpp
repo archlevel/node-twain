@@ -411,30 +411,31 @@ TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap, Napi::Object obj) 
         
         switch (itemType) {
             case TWTY_INT8:
-                ((TW_INT8*)pEnum->ItemList)[i] = (TW_INT8)item.As<Napi::Number>().Int32Value();
+                pEnum->ItemList[i] = (TW_INT8)item.As<Napi::Number>().Int32Value();
                 break;
             case TWTY_INT16:
-                ((TW_INT16*)pEnum->ItemList)[i] = (TW_INT16)item.As<Napi::Number>().Int32Value();
+                pEnum->ItemList[i] = (TW_INT16)item.As<Napi::Number>().Int32Value();
                 break;
             case TWTY_INT32:
-                ((TW_INT32*)pEnum->ItemList)[i] = (TW_INT32)item.As<Napi::Number>().Int32Value();
+                pEnum->ItemList[i] = (TW_INT32)item.As<Napi::Number>().Int32Value();
                 break;
             case TWTY_UINT8:
-                ((TW_UINT8*)pEnum->ItemList)[i] = (TW_UINT8)item.As<Napi::Number>().Uint32Value();
+                pEnum->ItemList[i] = (TW_UINT8)item.As<Napi::Number>().Uint32Value();
                 break;
             case TWTY_UINT16:
-                ((TW_UINT16*)pEnum->ItemList)[i] = (TW_UINT16)item.As<Napi::Number>().Uint32Value();
+                pEnum->ItemList[i] = (TW_UINT16)item.As<Napi::Number>().Uint32Value();
                 break;
             case TWTY_UINT32:
-                ((TW_UINT32*)pEnum->ItemList)[i] = (TW_UINT32)item.As<Napi::Number>().Uint32Value();
+                pEnum->ItemList[i] = (TW_UINT32)item.As<Napi::Number>().Uint32Value();
                 break;
             case TWTY_FIX32: {
                 TW_FIX32 fix32Value = doubleToFix32(item.As<Napi::Number>().DoubleValue());
-                std::memcpy(&((TW_FIX32*)pEnum->ItemList)[i], &fix32Value, sizeof(TW_FIX32));
+                std::memcpy(&pEnum->ItemList[i], &fix32Value, sizeof(TW_FIX32));
                 break;
             }
             case TWTY_BOOL:
-                ((TW_BOOL*)pEnum->ItemList)[i] = item.As<Napi::Boolean>().Value();
+                pEnum->ItemList[i] = item.As<Napi::Boolean>().Value() ?  1 : 0;
+                std::cout << "set TW_BOOL= " << (TW_BOOL)pEnum->ItemList[i] << std::endl;
                 break;
             default:
                 std::cerr << "Unsupported item type in loop" << std::endl;
@@ -442,7 +443,7 @@ TW_UINT16 TwainSession::setEnumerationCap(TW_CAPABILITY &cap, Napi::Object obj) 
                 freeMemory(cap.hContainer);
                 return TWRC_FAILURE;
         }
-        std::cout << "set index= " << i << ", pEnum->ItemType= " << pEnum->ItemType << ", pEnum->ItemList[" << i << "]= " << ((TW_UINT32*)pEnum->ItemList)[i] << std::endl;
+        std::cout << "set index= " << i << ", pEnum->ItemType= " << pEnum->ItemType << ", pEnum->ItemList[" << i << "]= " << (TW_UINT32)pEnum->ItemList[i] << std::endl;
     }
 
     std::cout << "start unlockMemory:" << std::endl;
@@ -552,30 +553,31 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, Napi::Object obj) {
         
         switch (itemType) {
             case TWTY_INT8:
-                ((TW_INT8*)pArray->ItemList)[i] = (TW_INT8)item.As<Napi::Number>().Int32Value();
+                pArray->ItemList[i] = (TW_INT8)item.As<Napi::Number>().Int32Value();
                 break;
             case TWTY_INT16:
-                ((TW_INT16*)pArray->ItemList)[i] = (TW_INT16)item.As<Napi::Number>().Int32Value();
+                pArray->ItemList[i] = (TW_INT16)item.As<Napi::Number>().Int32Value();
                 break;
             case TWTY_INT32:
-                ((TW_INT32*)pArray->ItemList)[i] = (TW_INT32)item.As<Napi::Number>().Int32Value();
+                pArray->ItemList[i] = (TW_INT32)item.As<Napi::Number>().Int32Value();
                 break;
             case TWTY_UINT8:
-                ((TW_UINT8*)pArray->ItemList)[i] = (TW_UINT8)item.As<Napi::Number>().Uint32Value();
+                pArray->ItemList[i] = (TW_UINT8)item.As<Napi::Number>().Uint32Value();
                 break;
             case TWTY_UINT16:
-                ((TW_UINT16*)pArray->ItemList)[i] = (TW_UINT16)item.As<Napi::Number>().Uint32Value();
+                pArray->ItemList[i] = (TW_UINT16)item.As<Napi::Number>().Uint32Value();
                 break;
             case TWTY_UINT32:
-                ((TW_UINT32*)pArray->ItemList)[i] = (TW_UINT32)item.As<Napi::Number>().Uint32Value();
+                pArray->ItemList[i] = (TW_UINT32)item.As<Napi::Number>().Uint32Value();
                 break;
             case TWTY_FIX32: {
                 TW_FIX32 fix32Value = doubleToFix32(item.As<Napi::Number>().DoubleValue());
-                std::memcpy(&((TW_FIX32*)pArray->ItemList)[i], &fix32Value, sizeof(TW_FIX32));
+                std::memcpy(&pArray->ItemList[i], &fix32Value, sizeof(TW_FIX32));
                 break;
             }
             case TWTY_BOOL:
-                ((TW_BOOL*)pArray->ItemList)[i] = item.As<Napi::Boolean>().Value();
+                pArray->ItemList[i] = item.As<Napi::Boolean>().Value() ? 1 : 0;
+                std::cout << "set TW_BOOL= " << (TW_BOOL)pArray->ItemList[i] << std::endl;
                 break;
             default:
                 std::cerr << "Unsupported item type in loop" << std::endl;
@@ -584,7 +586,7 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, Napi::Object obj) {
                 return TWRC_FAILURE;
         }
 
-        std::cout << "set index= " << i << ", pArray->ItemType= " << pArray->ItemType << ", pArray->ItemList= " << ((TW_UINT32*)pArray->ItemList)[i] << std::endl;
+        std::cout << "set index= " << i << ", pArray->ItemType= " << pArray->ItemType << ", pArray->ItemList= " << (TW_UINT32)pArray->ItemList[i] << std::endl;
     }
     std::cout << "start unlockMemory:" << std::endl;
     unlockMemory(cap.hContainer);
@@ -633,7 +635,7 @@ TW_UINT16 TwainSession::setOneValueCap(TW_CAPABILITY &cap, Napi::Object obj) {
             pOneValue->Item = obj.Get("value").As<Napi::Number>().Uint32Value();
             break;
         case TWTY_BOOL:
-            pOneValue->Item = obj.Get("value").As<Napi::Boolean>().Value();
+            pOneValue->Item = obj.Get("value").As<Napi::Boolean>().Value() ? 1 : 0;
             break;
         case TWTY_FIX32:
             TW_FIX32 fix32Value = doubleToFix32(obj.Get("value").As<Napi::Number>().DoubleValue());
