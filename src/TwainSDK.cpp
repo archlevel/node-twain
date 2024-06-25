@@ -143,6 +143,7 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
         return Napi::Boolean::New(env, false);
     }
     if (cap.ConType == TWON_RANGE) {
+        std::cout << "get ConType TWON_RANGE" << std::endl;
         pTW_RANGE pRange = (pTW_RANGE) session.lockMemory(cap.hContainer);
         Napi::Object rangeResult = Napi::Object::New(env);
         std::cout << "get pRange->ItemType= "<< pRange->ItemType << std::endl;
@@ -164,6 +165,7 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
         session.unlockMemory(cap.hContainer);
         return rangeResult;
     } else if (cap.ConType == TWON_ARRAY) {
+        std::cout << "get ConType TWON_ARRAY" << std::endl;
         pTW_ARRAY pArray = (pTW_ARRAY) session.lockMemory(cap.hContainer);
         Napi::Array arr = Napi::Array::New(env, pArray->NumItems);
         for (TW_UINT32 index = 0; index < pArray->NumItems; index++) {
@@ -183,6 +185,7 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
         session.unlockMemory(cap.hContainer);
         return arr;
     } else if (cap.ConType == TWON_ONEVALUE) {
+        std::cout << "get ConType TWON_ONEVALUE" << std::endl;
         pTW_ONEVALUE pOne = (pTW_ONEVALUE) session.lockMemory(cap.hContainer);
         std::cout << "get pOne->ItemType= "<< pOne->ItemType << std::endl;
         Napi::Value result;
@@ -223,6 +226,7 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
         session.unlockMemory(cap.hContainer);
         return result;
     } else if (cap.ConType == TWON_ENUMERATION) {
+        std::cout << "get ConType TWON_ENUMERATION" << std::endl;
         pTW_ENUMERATION pEnum = (pTW_ENUMERATION) session.lockMemory(cap.hContainer);
         Napi::Object enumResult = Napi::Object::New(env);
         Napi::Array list = Napi::Array::New(env, pEnum->NumItems);
