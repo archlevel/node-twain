@@ -856,17 +856,6 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
     else {
         std::cout << "Test::" << std::to_string(rc) << std::endl;
     }
-    
-
-//    TW_STR255 str;
-//    snprintf((char *)fileXfer.FileName, str);
-    // fileXfer.FileName[0] = 'i';
-    // fileXfer.FileName[1] = 'm';
-    // fileXfer.FileName[2] = '.';
-    // fileXfer.FileName[3] = 't';
-    // fileXfer.FileName[4] = 'i';
-    // fileXfer.FileName[5] = 'f';
-    // fileXfer.FileName[6] = 'f';
 
     while (bPendingXfers) {
 
@@ -882,8 +871,11 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
             std::cout << "file saved..." << fileXfer.FileName << std::endl;
             std::cout << "Checking to see if there are more images to transfer..." << std::endl;
 
-            //多参数回调
-            callback.Call({ Napi::Number::New(env,total),Napi::Number::New(env,left),Napi::String::New(env,path + +"_" + std::to_string(idx) + ext) });
+            if(callback != NULL){
+                //多参数回调
+                callback.Call({ Napi::Number::New(env,total),Napi::Number::New(env,left),Napi::String::New(env,path + +"_" + std::to_string(idx) + ext) });
+
+            }
 
             memset(&pendXfers, 0, sizeof(pendXfers));
             rc = entry(DG_CONTROL, DAT_PENDINGXFERS, MSG_ENDXFER, (TW_MEMREF) &pendXfers, pSource);
@@ -892,8 +884,10 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
             if (rc == TWRC_SUCCESS) {
                 if (left == 0) {
                     bPendingXfers = false;//所有结束
-                    //多参数回调
-                    callback.Call({ Napi::Number::New(env,total),Napi::Number::New(env,left),Napi::String::New(env,"finish") });
+                    if(callback != NULL){
+                        //多参数回调
+                        callback.Call({ Napi::Number::New(env,total),Napi::Number::New(env,left),Napi::String::New(env,"finish") });
+                    }
                 }
                 else {
                     idx = idx + 1;
@@ -908,16 +902,20 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
             std::cerr << "Cancel total" << std::to_string(total) << std::endl;
             std::cerr << "Cancel left" << std::to_string(left) << std::endl;
             std::cerr << "Cancel reason" << "cancel" << std::endl;
-            //多参数回调
-            callback.Call({ Napi::Number::New(env,total),Napi::Number::New(env,left),Napi::String::New(env,"cancel") });
+            if(callback != NULL){
+                //多参数回调
+                callback.Call({ Napi::Number::New(env,total),Napi::Number::New(env,left),Napi::String::New(env,"cancel") });
+            }
             break;
         } else if (rc == TWRC_FAILURE) {
             std::cerr << "Failed to transfer image" << std::endl;
             std::cerr << "Failed total"<< std::to_string(total) << std::endl;
             std::cerr << "Failed left" << std::to_string(left) << std::endl;
             std::cerr << "Failed reason" << "fail" << std::endl;
-            //多参数回调
-            callback.Call({ Napi::Number::New(env,total),Napi::Number::New(env,left),Napi::String::New(env,"fail") });
+            if(callback != NULL){
+                //多参数回调
+                callback.Call({ Napi::Number::New(env,total),Napi::Number::New(env,left),Napi::String::New(env,"fail") });
+            }
             break;
         }
     }

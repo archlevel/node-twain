@@ -1607,156 +1607,157 @@ typedef struct {
 #define MSG_CUSTOMBASE      0x8000
 
 /* Generic messages may be used with any of several DATs.                   */
-#define MSG_GET             0x0001
-#define MSG_GETCURRENT      0x0002
-#define MSG_GETDEFAULT      0x0003
-#define MSG_GETFIRST        0x0004
-#define MSG_GETNEXT         0x0005
-#define MSG_SET             0x0006
-#define MSG_RESET           0x0007
-#define MSG_QUERYSUPPORT    0x0008
-#define MSG_GETHELP         0x0009
-#define MSG_GETLABEL        0x000a
-#define MSG_GETLABELENUM    0x000b
-#define MSG_SETCONSTRAINT   0x000c
+#define MSG_GET             0x0001 //获取某个属性的配置
+#define MSG_GETCURRENT      0x0002 //获取某个属性的配置，当前值
+#define MSG_GETDEFAULT      0x0003 //获取某个属性的配置，默认值
+#define MSG_GETFIRST        0x0004 //获取某个属性的配置，第一个值
+#define MSG_GETNEXT         0x0005 //获取下一个数据项或设置
+#define MSG_SET             0x0006 //发送设置命令或数据 例如设置图像处理参数、调整扫描区域、配置设备选项等。
+#define MSG_RESET           0x0007 //清除当前的设置、中断或取消正在进行的扫描任务，或者重置设备到一个已知的起始状态
+#define MSG_QUERYSUPPORT    0x0008 //用于查询 TWAIN 数据源是否支持特定的功能或配置
+#define MSG_GETHELP         0x0009 //用于获取有关指定配置或操作的帮助信息
+#define MSG_GETLABEL        0x000a //用于获取指定配置的标签（Label）
+#define MSG_GETLABELENUM    0x000b //用于获取指定配置的标签枚举（Label Enumeration）
+#define MSG_SETCONSTRAINT   0x000c //用于设置配置的约束条件
 
 /* Messages used with DAT_NULL                                              */
-#define MSG_XFERREADY    0x0101
-#define MSG_CLOSEDSREQ   0x0102
-#define MSG_CLOSEDSOK    0x0103
-#define MSG_DEVICEEVENT  0X0104
+#define MSG_XFERREADY    0x0101 //用于通知 TWAIN 应用程序数据源（扫描设备）已准备好传输图像数据
+#define MSG_CLOSEDSREQ   0x0102 //用于通知 TWAIN 数据源（扫描设备）请求关闭当前数据源
+#define MSG_CLOSEDSOK    0x0103 //用于确认 TWAIN 数据源（扫描设备）已经成功关闭当前数据源会话
+#define MSG_DEVICEEVENT  0X0104 //是TWAIN 接口中用于传递设备事件（如按钮按下、错误发生等）给 TWAIN 应用程序的消息类型之一
 
 /* Messages used with a pointer to DAT_PARENT data                          */
-#define MSG_OPENDSM      0x0301
-#define MSG_CLOSEDSM     0x0302
+#define MSG_OPENDSM      0x0301 //用于在 TWAIN 应用程序中打开数据源管理器（DSM，Data Source Manager）
+#define MSG_CLOSEDSM     0x0302 //用于在 TWAIN 应用程序中关闭数据源管理器（DSM，Data Source Manager）
 
 /* Messages used with a pointer to a DAT_IDENTITY structure                 */
-#define MSG_OPENDS       0x0401
-#define MSG_CLOSEDS      0x0402
-#define MSG_USERSELECT   0x0403
+#define MSG_OPENDS       0x0401 //用于打开数据源（DS，Data Source）
+#define MSG_CLOSEDS      0x0402 //用于关闭数据源（DS，Data Source）
+#define MSG_USERSELECT   0x0403 //用于向数据源管理器（DSM，Data Source Manager）发送用户选择请求
 
 /* Messages used with a pointer to a DAT_USERINTERFACE structure            */
-#define MSG_DISABLEDS    0x0501
-#define MSG_ENABLEDS     0x0502
-#define MSG_ENABLEDSUIONLY  0x0503
+#define MSG_DISABLEDS    0x0501 //用于通知数据源管理器（DSM，Data Source Manager）停用当前正在使用的数据源（Data Source）
+#define MSG_ENABLEDS     0x0502 //用于通知数据源管理器（DSM，Data Source Manager）启用一个特定的数据源（Data Source）
+#define MSG_ENABLEDSUIONLY  0x0503 //用于通知数据源管理器（DSM，Data Source Manager）启用一个指定的数据源，但仅用于用户界面交互，不执行实际的数据传输操作
 
 /* Messages used with a pointer to a DAT_EVENT structure                    */
-#define MSG_PROCESSEVENT 0x0601
+#define MSG_PROCESSEVENT 0x0601 //用于告知数据源管理器（DSM，Data Source Manager）请求处理事件
 
 /* Messages used with a pointer to a DAT_PENDINGXFERS structure             */
-#define MSG_ENDXFER      0x0701
-#define MSG_STOPFEEDER   0x0702
+#define MSG_ENDXFER      0x0701 //用于通知数据源管理器（DSM，Data Source Manager）当前的图像传输已经结束，即扫描操作已完成
+#define MSG_STOPFEEDER   0x0702 //用于通知数据源管理器（DSM，Data Source Manager）停止自动文档进给器（Feeder）的操作
 
 /* Messages used with a pointer to a DAT_FILESYSTEM structure               */
-#define MSG_CHANGEDIRECTORY   0x0801
-#define MSG_CREATEDIRECTORY   0x0802
-#define MSG_DELETE            0x0803
-#define MSG_FORMATMEDIA       0x0804
-#define MSG_GETCLOSE          0x0805
-#define MSG_GETFIRSTFILE      0x0806
-#define MSG_GETINFO           0x0807
-#define MSG_GETNEXTFILE       0x0808
-#define MSG_RENAME            0x0809
-#define MSG_COPY              0x080A
-#define MSG_AUTOMATICCAPTUREDIRECTORY 0x080B
+#define MSG_CHANGEDIRECTORY   0x0801 //不是 TWAIN 接口中的标准消息类型。在 TWAIN 接口中，消息类型通常用于数据传输、控制和事件通知等操作，如扫描控制、设备状态更新等
+#define MSG_CREATEDIRECTORY   0x0802 //主要用于扫描设备控制和数据传输，通常涵盖扫描操作、设备控制、事件处理等功能
+#define MSG_DELETE            0x0803 //TWAIN 接口主要用于扫描设备控制和数据传输，通常涵盖扫描操作、设备控制、事件处理等功能
+#define MSG_FORMATMEDIA       0x0804 //用于指示扫描设备格式化媒体（如纸张）的操作。该消息的具体用法和效果取决于具体的 TWAIN 驱动和设备支持情况，通常用于设置扫描设备在进行扫描之前准备媒体的方式
+#define MSG_GETCLOSE          0x0805 //用于获取有关关闭扫描设备（Data Source，DS）的信息
+#define MSG_GETFIRSTFILE      0x0806 //不是 TWAIN 接口中定义的消息类型。在 TWAIN 接口中，常见的消息类型包括 MSG_GET, MSG_SET, MSG_ENABLEDS, MSG_DISABLEDS 等，用于控制和管理数据源（Data Source，DS）的行为和设置
+#define MSG_GETINFO           0x0807 //用于获取有关数据源（Data Source，DS）的信息。具体而言，它允许应用程序查询有关数据源的详细信息，如厂商、产品名称、版本号等。以下是一些常见的信息
+#define MSG_GETNEXTFILE       0x0808 //用于获取下一个文件的信息。在扫描多页文档时，可以使用此消息来获取下一个文件的数据
+#define MSG_RENAME            0x0809 //用于重命名数据源（Data Source，DS）的操作
+#define MSG_COPY              0x080A //用于指示数据源（Data Source，DS）执行复制操作
+#define MSG_AUTOMATICCAPTUREDIRECTORY 0x080B //在 TWAIN 接口中，MSG_AUTOMATICCAPTUREDIRECTORY 并不是一个标准的 TWAIN 消息类型。TWAIN 规范中定义了一系列标准消息，用于应用程序与数据源（扫描仪驱动程序）之间进行通信和控制扫描过程。这些标准消息通常涵盖了从初始化数据源到执行扫描、设置参数、获取图像数据等多个方面。
 
 /* Messages used with a pointer to a DAT_PASSTHRU structure                 */
-#define MSG_PASSTHRU          0x0901
+#define MSG_PASSTHRU          0x0901 //用于向数据源（如扫描仪驱动程序）发送原始命令或者查询
 
 /* used with DAT_CALLBACK */
-#define MSG_REGISTER_CALLBACK 0x0902
+#define MSG_REGISTER_CALLBACK 0x0902 //在 TWAIN 编程中，MSG_REGISTER_CALLBACK 并不是标准的 TWAIN 消息。通常情况下，TWAIN 规范中没有直接定义用于注册回调函数的标准消息。然而，某些 TWAIN 驱动程序或者库可能会扩展 TWAIN 规范，引入自定义的消息或者机制来支持回调函数的注册。
 
 /* used with DAT_CAPABILITY */
-#define MSG_RESETALL          0x0A01
+#define MSG_RESETALL          0x0A01 //在 TWAIN 编程中，MSG_RESETALL 并不是标准的 TWAIN 消息。TWAIN 规范中没有定义 MSG_RESETALL 这样的消息，因此它可能是某些 TWAIN 库或者驱动程序扩展的自定义消息
 
 /* used with DAT_TWAINDIRECT */
-#define MSG_SETTASK           0x0B01
+#define MSG_SETTASK           0x0B01 //在 TWAIN 编程中，MSG_SETTASK 也不是标准的 TWAIN 消息。根据 TWAIN 规范，没有定义 MSG_SETTASK 这样的消息
 
 /****************************************************************************
  * Capabilities                                                             *
  ****************************************************************************/
+ //指的是数据源（扫描仪或相机等）提供的功能和设置选项。这些功能可以包括扫描分辨率、色彩模式、页面大小、亮度、对比度等。TWAIN 规范定义了一组标准能力（Standard Capabilities），同时还允许厂商根据需要定义扩展能力（Extended Capabilities）。
 
-#define CAP_CUSTOMBASE          0x8000 /* Base of custom capabilities */
+#define CAP_CUSTOMBASE          0x8000 /* Base of custom capabilities 用于表示自定义能力的基础值 */
 
 /* all data sources are REQUIRED to support these caps */
-#define CAP_XFERCOUNT           0x0001
+#define CAP_XFERCOUNT           0x0001 //用于指定一次扫描操作中的图像传输数量限制。这个能力允许应用程序控制从数据源（如扫描仪）获取图像的数量
 
 /* image data sources are REQUIRED to support these caps */
-#define ICAP_COMPRESSION        0x0100
-#define ICAP_PIXELTYPE          0x0101
-#define ICAP_UNITS              0x0102
-#define ICAP_XFERMECH           0x0103
+#define ICAP_COMPRESSION        0x0100 //用于指定扫描数据的压缩方式。它允许应用程序控制从扫描仪获取图像数据时是否进行压缩，以及使用哪种压缩算法
+#define ICAP_PIXELTYPE          0x0101 //用于指定扫描数据的像素类型。它允许应用程序控制从扫描仪获取图像数据时使用的像素格式和颜色深度
+#define ICAP_UNITS              0x0102 //用于指定扫描数据的单位类型。它允许应用程序控制从扫描仪获取图像时使用的单位类型，如英寸、毫米等
+#define ICAP_XFERMECH           0x0103 //用于指定数据传输机制，即如何从扫描仪获取图像数据
 
 /* all data sources MAY support these caps */
-#define CAP_AUTHOR                  0x1000
-#define CAP_CAPTION                 0x1001
-#define CAP_FEEDERENABLED           0x1002
-#define CAP_FEEDERLOADED            0x1003
-#define CAP_TIMEDATE                0x1004
-#define CAP_SUPPORTEDCAPS           0x1005
-#define CAP_EXTENDEDCAPS            0x1006
-#define CAP_AUTOFEED                0x1007
-#define CAP_CLEARPAGE               0x1008
-#define CAP_FEEDPAGE                0x1009
-#define CAP_REWINDPAGE              0x100a
-#define CAP_INDICATORS              0x100b
-#define CAP_PAPERDETECTABLE         0x100d
-#define CAP_UICONTROLLABLE          0x100e
-#define CAP_DEVICEONLINE            0x100f
-#define CAP_AUTOSCAN                0x1010
-#define CAP_THUMBNAILSENABLED       0x1011
-#define CAP_DUPLEX                  0x1012
-#define CAP_DUPLEXENABLED           0x1013
-#define CAP_ENABLEDSUIONLY          0x1014
-#define CAP_CUSTOMDSDATA            0x1015
-#define CAP_ENDORSER                0x1016
-#define CAP_JOBCONTROL              0x1017
-#define CAP_ALARMS                  0x1018
-#define CAP_ALARMVOLUME             0x1019
-#define CAP_AUTOMATICCAPTURE        0x101a
-#define CAP_TIMEBEFOREFIRSTCAPTURE  0x101b
-#define CAP_TIMEBETWEENCAPTURES     0x101c
-#define CAP_MAXBATCHBUFFERS         0x101e
-#define CAP_DEVICETIMEDATE          0x101f
-#define CAP_POWERSUPPLY             0x1020
-#define CAP_CAMERAPREVIEWUI         0x1021
-#define CAP_DEVICEEVENT             0x1022
-#define CAP_SERIALNUMBER            0x1024
-#define CAP_PRINTER                 0x1026
-#define CAP_PRINTERENABLED          0x1027
-#define CAP_PRINTERINDEX            0x1028
-#define CAP_PRINTERMODE             0x1029
-#define CAP_PRINTERSTRING           0x102a
-#define CAP_PRINTERSUFFIX           0x102b
-#define CAP_LANGUAGE                0x102c
-#define CAP_FEEDERALIGNMENT         0x102d
-#define CAP_FEEDERORDER             0x102e
-#define CAP_REACQUIREALLOWED        0x1030
-#define CAP_BATTERYMINUTES          0x1032
-#define CAP_BATTERYPERCENTAGE       0x1033
-#define CAP_CAMERASIDE              0x1034
-#define CAP_SEGMENTED               0x1035
-#define CAP_CAMERAENABLED           0x1036
-#define CAP_CAMERAORDER             0x1037
-#define CAP_MICRENABLED             0x1038
-#define CAP_FEEDERPREP              0x1039
-#define CAP_FEEDERPOCKET            0x103a
-#define CAP_AUTOMATICSENSEMEDIUM    0x103b
-#define CAP_CUSTOMINTERFACEGUID     0x103c
-#define CAP_SUPPORTEDCAPSSEGMENTUNIQUE    0x103d
-#define CAP_SUPPORTEDDATS           0x103e
-#define CAP_DOUBLEFEEDDETECTION     0x103f
-#define CAP_DOUBLEFEEDDETECTIONLENGTH 0x1040
-#define CAP_DOUBLEFEEDDETECTIONSENSITIVITY 0x1041
-#define CAP_DOUBLEFEEDDETECTIONRESPONSE 0x1042
-#define CAP_PAPERHANDLING           0x1043
-#define CAP_INDICATORSMODE          0x1044
-#define CAP_PRINTERVERTICALOFFSET   0x1045
-#define CAP_POWERSAVETIME           0x1046
-#define CAP_PRINTERCHARROTATION	    0x1047
-#define CAP_PRINTERFONTSTYLE        0x1048
-#define CAP_PRINTERINDEXLEADCHAR    0x1049
-#define CAP_PRINTERINDEXMAXVALUE    0x104A
+#define CAP_AUTHOR                  0x1000 //用于表示扫描设备或数据源的制造商或供应商信息
+#define CAP_CAPTION                 0x1001 //用于设置或获取扫描仪设备或数据源在用户界面中显示的标题或名称
+#define CAP_FEEDERENABLED           0x1002 //用于设置或查询扫描仪或数据源的进纸器（Feeder）是否启用的状态
+#define CAP_FEEDERLOADED            0x1003 //用于查询当前扫描仪或数据源中的进纸器（Feeder）是否加载了文档
+#define CAP_TIMEDATE                0x1004 //用于设置或获取扫描设备的当前时间和日期信息
+#define CAP_SUPPORTEDCAPS           0x1005 //它用于查询当前 TWAIN 数据源（扫描设备）所支持的所有能力（Capabilities）列表
+#define CAP_EXTENDEDCAPS            0x1006 //用于查询与扫描设备相关的扩展能力列表
+#define CAP_AUTOFEED                0x1007 //用于控制自动进纸功能的开启或关闭
+#define CAP_CLEARPAGE               0x1008 //用于控制扫描设备在扫描之前是否自动清除页面上的内容
+#define CAP_FEEDPAGE                0x1009 //用于控制扫描设备在每次扫描之后是否允许或需要用户手动或自动将新的页面送入设备
+#define CAP_REWINDPAGE              0x100a //用于控制扫描设备在扫描过程中是否支持或需要回退（Rewind）页面。这个能力通常用于特定的扫描设备，允许应用程序在扫描完成后需要重新扫描或回退到上一个页面时进行控制
+#define CAP_INDICATORS              0x100b //用于控制和查询扫描设备的指示器（Indicators）功能。指示器通常是设备上的物理或虚拟指示灯或显示器，用于显示设备状态、扫描进度或其他重要信息
+#define CAP_PAPERDETECTABLE         0x100d //用于检测和指示扫描设备是否能够自动检测文档（纸张）的存在或缺失
+#define CAP_UICONTROLLABLE          0x100e //用于指示扫描设备是否支持通过 TWAIN 用户界面（TWAIN UI）进行控制和设置
+#define CAP_DEVICEONLINE            0x100f //用于检查和指示扫描设备是否处于在线状态
+#define CAP_AUTOSCAN                0x1010 //用于指示和控制扫描设备是否支持自动扫描功能
+#define CAP_THUMBNAILSENABLED       0x1011 //用于指示和控制扫描设备是否支持生成和传输缩略图（Thumbnail）的功能
+#define CAP_DUPLEX                  0x1012 //用于指示和控制扫描设备是否支持双面（双面）扫描功能
+#define CAP_DUPLEXENABLED           0x1013 //用于指示和控制扫描设备是否启用了双面扫描功能
+#define CAP_ENABLEDSUIONLY          0x1014 //用于指示和控制扫描设备是否只允许用户界面（UI）扫描
+#define CAP_CUSTOMDSDATA            0x1015 //用于支持自定义的数据传输和设备状态信息
+#define CAP_ENDORSER                0x1016 //用于控制和管理扫描设备上的签章器（Endorser）功能
+#define CAP_JOBCONTROL              0x1017 //用于控制和管理扫描作业的行为和属性。这些能力允许应用程序在扫描过程中指定和控制如何处理扫描作业，例如是否进行批处理扫描、如何命名扫描文件等
+#define CAP_ALARMS                  0x1018 //用于控制和管理设备在特定事件或条件下触发的警报和通知功能
+#define CAP_ALARMVOLUME             0x1019 //用于控制和管理设备在发出警报时的音量设置
+#define CAP_AUTOMATICCAPTURE        0x101a //用于控制设备是否支持自动捕捉（Automatic Capture）功能
+#define CAP_TIMEBEFOREFIRSTCAPTURE  0x101b //用于设置设备在首次捕捉之前的等待时间
+#define CAP_TIMEBETWEENCAPTURES     0x101c //用于设置设备在连续捕捉操作之间的等待时间间隔
+#define CAP_MAXBATCHBUFFERS         0x101e //用于指定设备支持的最大批处理缓冲区数量
+#define CAP_DEVICETIMEDATE          0x101f //用于获取或设置扫描设备的当前日期和时间信息
+#define CAP_POWERSUPPLY             0x1020 //用于查询或设置扫描设备的电源供应状态
+#define CAP_CAMERAPREVIEWUI         0x1021 //用于控制和启用相机预览界面
+#define CAP_DEVICEEVENT             0x1022 //用于设备事件处理，允许应用程序注册和处理来自扫描设备的事件通知。这些事件通常涉及设备状态的改变或特定操作的完成
+#define CAP_SERIALNUMBER            0x1024 //用于获取扫描设备的序列号信息
+#define CAP_PRINTER                 0x1026 //用于指示设备是否支持打印功能
+#define CAP_PRINTERENABLED          0x1027 //用于指示扫描设备是否已启用打印功能
+#define CAP_PRINTERINDEX            0x1028 //用于设置或获取扫描设备连接的打印机的索引或标识
+#define CAP_PRINTERMODE             0x1029 //用于设置或获取扫描设备的打印模式
+#define CAP_PRINTERSTRING           0x102a //用于设置或获取打印机相关的字符串信息
+#define CAP_PRINTERSUFFIX           0x102b //用于设置或获取与打印机相关的后缀信息，例如文件名后缀、打印任务标识符等
+#define CAP_LANGUAGE                0x102c //用于设置或获取设备的语言设置
+#define CAP_FEEDERALIGNMENT         0x102d //用于设置或获取自动供稿器（Feeder）的对齐方式，允许应用程序控制自动供稿器中文框或图像的对齐方式
+#define CAP_FEEDERORDER             0x102e //用于设置或获取自动供稿器（Feeder）中文档的顺序
+#define CAP_REACQUIREALLOWED        0x1030 //用于控制是否允许重新获取（reacquire）文档或图像
+#define CAP_BATTERYMINUTES          0x1032 //用于查询或设置设备电池剩余时间的能力
+#define CAP_BATTERYPERCENTAGE       0x1033 //用于查询或设置设备电池剩余百分比的能力
+#define CAP_CAMERASIDE              0x1034 //用于设置或查询扫描设备的扫描面（扫描的正面或反面）
+#define CAP_SEGMENTED               0x1035 //用于指示扫描设备是否支持分段扫描
+#define CAP_CAMERAENABLED           0x1036 //用于指示扫描设备是否支持摄像头功能并能够启用或禁用摄像头
+#define CAP_CAMERAORDER             0x1037 //用于指定或查询扫描设备上多个摄像头的顺序和选择方式
+#define CAP_MICRENABLED             0x1038 //用于控制或查询扫描设备上的麦克风是否启用或支持
+#define CAP_FEEDERPREP              0x1039 //用于控制或查询扫描设备的自动进纸器（Feeder）是否准备就绪的状态
+#define CAP_FEEDERPOCKET            0x103a //用于控制或查询扫描设备的进纸仓（Feeder Pocket）功能。这种能力允许应用程序管理多个进纸仓（或称为扫描仓），并在需要时切换不同的仓位
+#define CAP_AUTOMATICSENSEMEDIUM    0x103b //用于控制和查询扫描设备是否支持自动检测介质类型的功能
+#define CAP_CUSTOMINTERFACEGUID     0x103c //用于指定自定义接口的全局唯一标识符（GUID），应用程序可以向扫描设备提供自定义功能或接口
+#define CAP_SUPPORTEDCAPSSEGMENTUNIQUE    0x103d //用于指示设备是否支持对每个分段的唯一标识符（Segment Unique ID）的能力查询
+#define CAP_SUPPORTEDDATS           0x103e //用于查询设备支持的数据源类型（Data Source Types，DATs）列表
+#define CAP_DOUBLEFEEDDETECTION     0x103f //用于指示设备是否支持双页进纸检测功能
+#define CAP_DOUBLEFEEDDETECTIONLENGTH 0x1040 //用于指定或查询设备用于双页进纸检测的长度阈值
+#define CAP_DOUBLEFEEDDETECTIONSENSITIVITY 0x1041 //用于设置或查询设备的双页进纸检测灵敏度
+#define CAP_DOUBLEFEEDDETECTIONRESPONSE 0x1042 //用于设置或查询设备在检测到双页进纸时的响应方式
+#define CAP_PAPERHANDLING           0x1043 //用于控制和配置设备在处理纸张时的行为和选项
+#define CAP_INDICATORSMODE          0x1044 //用于控制和配置设备的指示器模式
+#define CAP_PRINTERVERTICALOFFSET   0x1045 //用于控制打印机扫描时的垂直偏移量，用于调整扫描到的图像在打印输出中的位置，以满足特定的打印需求和布局要求
+#define CAP_POWERSAVETIME           0x1046 //用于设置或查询设备的省电时间设置，用于控制设备在空闲时自动进入省电模式并设置设备保持空闲状态多长时间后自动进入省电模式
+#define CAP_PRINTERCHARROTATION	    0x1047 //用于控制打印机或扫描仪在打印时字符的旋转角度设置
+#define CAP_PRINTERFONTSTYLE        0x1048 //用于控制打印机或扫描仪在打印时文本字体样式的设置
+#define CAP_PRINTERINDEXLEADCHAR    0x1049 //用于设置或查询打印机或扫描仪在生成索引时使用的字符
+#define CAP_PRINTERINDEXMAXVALUE    0x104A //用于设置或查询打印机或扫描仪生成索引的最大值
 #define CAP_PRINTERINDEXNUMDIGITS   0x104B
 #define CAP_PRINTERINDEXSTEP        0x104C
 #define CAP_PRINTERINDEXTRIGGER     0x104D
