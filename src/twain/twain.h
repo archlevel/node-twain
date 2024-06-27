@@ -541,7 +541,7 @@ typedef struct {
 
 /* This structure tells the application how many more complete transfers the Source currently has available. */
 typedef struct {
-   TW_UINT16 Count;
+   TW_UINT16 Count; //表示待处理传输的数量
    union {
        TW_UINT32 EOJ;
        TW_UINT32 Reserved;
@@ -571,9 +571,9 @@ typedef struct {
 
 /* Describes the file format and file specification information for a transfer through a disk file. */
 typedef struct {
-   TW_STR255 FileName;
-   TW_UINT16 Format;
-   TW_INT16  VRefNum;
+   TW_STR255 FileName; //这是一个字符串类型，用于存储文件名
+   TW_UINT16 Format; //表示文件的格式或类型
+   TW_INT16  VRefNum; //表示文件所在的虚拟文件系统的参考号
 } TW_SETUPFILEXFER, FAR * pTW_SETUPFILEXFER;
 
 /* Provides the application information about the Source's requirements and preferences regarding allocation of transfer buffer(s). */
@@ -1758,11 +1758,11 @@ typedef struct {
 #define CAP_PRINTERFONTSTYLE        0x1048 //用于控制打印机或扫描仪在打印时文本字体样式的设置
 #define CAP_PRINTERINDEXLEADCHAR    0x1049 //用于设置或查询打印机或扫描仪在生成索引时使用的字符
 #define CAP_PRINTERINDEXMAXVALUE    0x104A //用于设置或查询打印机或扫描仪生成索引的最大值
-#define CAP_PRINTERINDEXNUMDIGITS   0x104B
-#define CAP_PRINTERINDEXSTEP        0x104C
-#define CAP_PRINTERINDEXTRIGGER     0x104D
-#define CAP_PRINTERSTRINGPREVIEW    0x104E
-#define CAP_SHEETCOUNT              0x104F
+#define CAP_PRINTERINDEXNUMDIGITS   0x104B //这个标签表示打印机索引数字的能力。具体来说，它用于设置或查询打印机在索引编号中使用的数字位数。以下是该标签的可能用途
+#define CAP_PRINTERINDEXSTEP        0x104C //这通常表示打印机的索引步骤能力，可能用于设置或查询打印过程中每一步的索引位置或步进量
+#define CAP_PRINTERINDEXTRIGGER     0x104D //这通常表示打印机的索引触发能力，可能用于设置或查询打印触发索引的方式或条件
+#define CAP_PRINTERSTRINGPREVIEW    0x104E //这通常表示打印字符串预览能力，可能用于设置或查询打印时的字符串预览功能，使用户可以在实际打印前查看预览效果
+#define CAP_SHEETCOUNT              0x104F //这通常表示纸张计数能力，可能用于设置或查询当前设备处理的纸张数量
 
 
 
@@ -1952,18 +1952,18 @@ typedef struct {
 
 #define TWRC_CUSTOMBASE     0x8000
 
-#define TWRC_SUCCESS          0
-#define TWRC_FAILURE          1
-#define TWRC_CHECKSTATUS      2
-#define TWRC_CANCEL           3
-#define TWRC_DSEVENT          4
-#define TWRC_NOTDSEVENT       5
-#define TWRC_XFERDONE         6
-#define TWRC_ENDOFLIST        7
-#define TWRC_INFONOTSUPPORTED 8
-#define TWRC_DATANOTAVAILABLE 9
-#define TWRC_BUSY             10
-#define TWRC_SCANNERLOCKED    11
+#define TWRC_SUCCESS          0 //是 TWAIN 协议中的一个返回代码，表示请求的操作成功完成
+#define TWRC_FAILURE          1 //是 TWAIN 协议中的一个返回代码，表示请求的操作失败。这个返回代码通常指示操作无法完成，但具体的失败原因可能因情况而异，需要进一步的调查和处理
+#define TWRC_CHECKSTATUS      2 //表示需要检查状态以获取更多的信息
+#define TWRC_CANCEL           3 // 是 TWAIN 协议中的一个返回代码，表示操作被用户取消
+#define TWRC_DSEVENT          4 //通常需要处理数据源发送的事件，如按钮按下、设备错误等
+#define TWRC_NOTDSEVENT       5 //是 TWAIN 协议中的一个返回代码，它表示传递给 DSM_Entry 的事件并不是一个源事件。这通常发生在处理设备事件（如按钮按下、扫描仪错误等）时。如果您的应用程序接收到这个代码，意味着当前处理的事件不是由数据源（Data Source）引起的
+#define TWRC_XFERDONE         6 //表示数据传输已完成
+#define TWRC_ENDOFLIST        7 //表示枚举操作已经到达了列表的末尾或者没有更多的数据源可用
+#define TWRC_INFONOTSUPPORTED 8 //表示请求的信息不受支持。这通常发生在尝试查询设备或数据源不支持的特定信息时
+#define TWRC_DATANOTAVAILABLE 9 //是 TWAIN 协议中的一个返回代码，表示请求的数据当前不可用。这可能发生在尝试获取或处理图像数据时，但实际上没有可用的数据。在 Node.js 中处理这个返回代码，您需要根据您的应用场景和 TWAIN 库的特性来处理这种情况
+#define TWRC_BUSY             10 //是 TWAIN 协议中的一个返回代码，表示请求的操作因设备或资源繁忙而无法执行。在 Node.js 中处理这个返回代码，您需要考虑如何处理设备忙碌状态，通常需要等待一段时间后再次尝试执行操作。
+#define TWRC_SCANNERLOCKED    11 //是 TWAIN 协议中的一个返回代码，表示请求的操作因为扫描仪被锁定而无法执行。这通常发生在扫描仪当前正在执行其他操作时，不允许同时进行多个操作
 
 /* Condition Codes: Application gets these by doing DG_CONTROL DAT_STATUS MSG_GET.  */
 #define TWCC_CUSTOMBASE         0x8000

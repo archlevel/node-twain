@@ -9,8 +9,32 @@ TW_UINT16 message;
 TW_UINT16 dsmCallback(pTW_IDENTITY pOrigin, pTW_IDENTITY pDest, TW_UINT32 uiDG, TW_UINT16 uiDAT, TW_UINT16 uiMSG, TW_MEMREF pData) {
     std::cout << "Trigger callback" << std::endl;
     switch(uiMSG) {
-        case MSG_XFERREADY:
+        case MSG_CLOSEDSREQ: //数据源（扫描设备）请求关闭当前数据源
+            std::cout << "Callback:" << "MSG_CLOSEDSREQ" << std::endl;
+            message = uiMSG;
+            break;
+        case MSG_ENABLEDS: //启用一个特定的数据源（Data Source）
+            std::cout << "Callback:" << "MSG_ENABLEDS" << std::endl;
+            message = uiMSG;
+            break;
+        case MSG_DISABLEDS: //停用当前正在使用的数据源
+            std::cout << "Callback:" << "MSG_DISABLEDS" << std::endl;
+            message = uiMSG;
+            break;
+        case MSG_ENABLEDSUIONLY: //启用一个指定的数据源
+            std::cout << "Callback:" << "MSG_ENABLEDSUIONLY" << std::endl;
+            message = uiMSG;
+            break;
+        case MSG_XFERREADY: //当数据源完成设置和初始化，并且可以开始传输图像数据时
             std::cout << "Callback:" << "MSG_XFERREADY" << std::endl;
+            message = uiMSG;
+            break;
+        case MSG_ENDXFER://当前的图像传输已经结束
+            std::cout << "Callback:" << "MSG_ENDXFER" << std::endl;
+            message = uiMSG;
+            break;
+        case MSG_STOPFEEDER: //停止自动进纸、取消正在进行的扫描任务
+            std::cout << "Callback:" << "MSG_STOPFEEDER" << std::endl;
             message = uiMSG;
             break;
     }
