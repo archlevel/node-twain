@@ -120,7 +120,7 @@ describe('quick', () => {
         // session.enableDataSource()
 
         // pSource
-        session.scan(twain.TWSX_FILE, "C:\\Users\\A11200321050133\\Documents\\Scanned Documents\\imageFromScanner",(total, left, data) => {
+        session.scan(twain.TWSX_FILE, "C:\\Users\\A11200321050133\\Documents\\Scanned Documents\\imageFromScanner",(rcCode, data) => {
             console.log('收到回调:',total, left, data);
         })
         // pOneValue

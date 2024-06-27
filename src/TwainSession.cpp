@@ -897,7 +897,7 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
 
             if(callback != NULL){
                 //多参数回调
-                callback.Call({ Napi::Number::New(env,total),Napi::Number::New(env,left),Napi::String::New(env,path + +"_" + std::to_string(idx) + ext) });
+                callback.Call({ Napi::Number::New(env,rc),Napi::String::New(env,path + +"_" + std::to_string(idx) + ext) });
 
             }
 
@@ -910,7 +910,7 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
                     bPendingXfers = false;//所有结束
                     if(callback != NULL){
                         //多参数回调
-                        callback.Call({ Napi::Number::New(env,total),Napi::Number::New(env,left),Napi::String::New(env,"finish") });
+                        callback.Call({ Napi::Number::New(env,rc),Napi::String::New(env,"finish") });
                     }
                 }
                 else {
@@ -921,24 +921,33 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
                 std::cerr << "Failed to properly end the transfer" << std::endl;
                 bPendingXfers = false;
             }
-        } else if (rc == TWRC_CANCEL) {
+        }
+        else if (rc == TWRC_CANCEL) {
             std::cerr << "Cancel to transfer image" << std::endl;
             std::cerr << "Cancel total" << std::to_string(total) << std::endl;
             std::cerr << "Cancel left" << std::to_string(left) << std::endl;
             std::cerr << "Cancel reason" << "cancel" << std::endl;
             if(callback != NULL){
                 //多参数回调
-                callback.Call({ Napi::Number::New(env,total),Napi::Number::New(env,left),Napi::String::New(env,"cancel") });
+                callback.Call({ Napi::Number::New(env,rc),Napi::String::New(env,"cancel") });
             }
             break;
-        } else if (rc == TWRC_FAILURE) {
+        }
+        else if (rc == TWRC_FAILURE
+                || rc == TWRC_DSEVENT
+                || rc == TWRC_NOTDSEVENT
+                || rc == TWRC_ENDOFLIST
+                || rc == TWRC_INFONOTSUPPORTED
+                || rc == TWRC_BUSY
+                || rc == TWRC_DATANOTAVAILABLE
+                || rc == TWRC_SCANNERLOCKED) {
             std::cerr << "Failed to transfer image" << std::endl;
             std::cerr << "Failed total"<< std::to_string(total) << std::endl;
             std::cerr << "Failed left" << std::to_string(left) << std::endl;
             std::cerr << "Failed reason" << "fail" << std::endl;
             if(callback != NULL){
                 //多参数回调
-                callback.Call({ Napi::Number::New(env,total),Napi::Number::New(env,left),Napi::String::New(env,"fail") });
+                callback.Call({ Napi::Number::New(env,rc),Napi::String::New(env,"fail") });
             }
             break;
         }
