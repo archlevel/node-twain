@@ -5,6 +5,11 @@
 #include "TwainSession.h"
 
 TW_UINT16 message;
+
+TwainSession::TwainSession()
+    : env(nullptr), jsCallbackFun() // 初始化成员变量
+{}
+
 TW_UINT16 dsmCallback(pTW_IDENTITY pOrigin, pTW_IDENTITY pDest, TW_UINT32 uiDG, TW_UINT16 uiDAT, TW_UINT16 uiMSG, TW_MEMREF pData) {
     std::cout << "Trigger callback" << std::endl;
     switch(uiMSG) {

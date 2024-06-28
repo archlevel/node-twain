@@ -28,6 +28,8 @@ public:
     TW_IDENTITY source;                 //set Source by user
     TW_UINT16 state = 1;
 
+    TwainSession(); // 添加构造函数声明
+
     void fillIdentity(TW_IDENTITY id);
 
     /**
