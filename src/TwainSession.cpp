@@ -11,7 +11,7 @@ TwainSession::TwainSession()
 {}
 
 TW_UINT16 dsmCallback(pTW_IDENTITY pOrigin, pTW_IDENTITY pDest, TW_UINT32 uiDG, TW_UINT16 uiDAT, TW_UINT16 uiMSG, TW_MEMREF pData) {
-    TwainSession* self = reinterpret_cast<TwainSession*>(pOrigin->RefCon); // 获取 TwainSession 实例
+    TwainSession* self = reinterpret_cast<TwainSession*>(pData->RefCon); // 获取 TwainSession 实例
     std::cout << "Trigger callback" << std::endl;
     switch(uiMSG) {
         case MSG_CLOSEDSREQ: //数据源（扫描设备）请求关闭当前数据源
@@ -707,9 +707,10 @@ TW_UINT16 TwainSession::setCallback(Napi::Env env,Napi::Function jsCallbackFun) 
     this->env = env;
     this->jsCallbackFun = jsCallbackFun;
     TW_CALLBACK callback = {0};
-    callback.RefCon = (TW_MEMREF)this; // 将 this 指针传递给回调函数
-    callback.CallBackProc = (TW_MEMREF) dsmCallback;
-    TW_UINT16 rc = entry(DG_CONTROL, DAT_CALLBACK, MSG_REGISTER_CALLBACK, (TW_MEMREF) &callback, &source);
+    callback.RefCon = reinterpret_cast<TW_UINT32>(this); // 使用 this 指针作为 RefCon
+    callback.CallBackProc = reinterpret_cast<TW_MEMREF>(dsmCallback);
+    //callback.CallBackProc = (TW_MEMREF) dsmCallback;
+    TW_UINT16 rc = entry(DG_CONTROL, DAT_CALLBACK, MSG_REGISTER_CALLBACK, (TW_MEMREF) &callback/*即获取函数指针*/, &source);
     return rc;
 }
 

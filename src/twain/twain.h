@@ -610,9 +610,9 @@ typedef struct {
 
 /* This structure is used to handle the user interface coordination between an application and a Source. */
 typedef struct {
-   TW_BOOL    ShowUI;
-   TW_BOOL    ModalUI;
-   TW_HANDLE  hParent;
+   TW_BOOL    ShowUI;  //表示是否显示用户界面
+   TW_BOOL    ModalUI; //表示用户界面是否为模态（即用户必须与其交互后才能返回到其他窗口）
+   TW_HANDLE  hParent; //表示父窗口的句柄
 } TW_USERINTERFACE, FAR * pTW_USERINTERFACE;
 
 
