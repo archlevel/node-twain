@@ -27,7 +27,6 @@ public:
     std::vector <TW_IDENTITY> sources;  // sources list. Used by getSources/openDS/setDefaultDS
     TW_IDENTITY source;                 //set Source by user
     TW_UINT16 state = 1;
-
     void fillIdentity(TW_IDENTITY id);
 
     /**
@@ -77,7 +76,7 @@ public:
 
     TW_UINT16 setOneValueCap(TW_CAPABILITY& cap,Napi::Object obj);
 
-    TW_UINT16 setCallback();
+    TW_UINT16 setCallback(Napi::Env env,Napi::Function jsCallbackFun);
 
     /**
      * state 4 -> 5
@@ -114,6 +113,8 @@ private:
     TW_ENTRYPOINT gDSMEntry = {0};
     TW_IDENTITY identity;
     pTW_IDENTITY pSource;               //set source by DS
+    Napi::Env jsCallbackEnv;
+    Napi::Function jsCallback;
     HWND parent;
 
     TW_STATUS status;
