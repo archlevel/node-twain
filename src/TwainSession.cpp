@@ -694,6 +694,8 @@ TW_UINT16 TwainSession::setCallback(Napi::Env env,Napi::Function jsCallbackFun) 
     if (state != 4) {
         return TWRC_FAILURE;
     }
+    this->env = env;
+    this->jsCallbackFun = jsCallbackFun;
     TW_CALLBACK callback = {0};
     callback.RefCon = 0;
     callback.CallBackProc = (TW_MEMREF) dsmCallback;

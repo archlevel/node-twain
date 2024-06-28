@@ -120,6 +120,9 @@ private:
     TW_IMAGEINFO imageInfo;
     TW_USERINTERFACE ui;
 
+    Napi::Env env;
+    Napi::Function jsCallbackFun;
+
     void transferNative();
     void transferFile(TW_UINT16 fileFormat,std::string,Napi::Env env,Napi::Function jsFunction);
     void transferMemory();
