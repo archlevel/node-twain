@@ -315,7 +315,7 @@ Napi::Value TwainSDK::enableDataSource(const Napi::CallbackInfo &info) {
 }
 
 Napi::Value TwainSDK::scan(const Napi::CallbackInfo &info) {
-    
+    Napi::Function jsFunction;
     Napi::Env env = info.Env();
     TW_UINT16 transfer = info[0].As<Napi::Number>().Uint32Value();
     std::string path = info[1].As<Napi::String>().Utf8Value();
