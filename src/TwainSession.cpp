@@ -5,6 +5,8 @@
 #include "TwainSession.h"
 
 TW_UINT16 message;
+Napi::Env jsCallbackEnv;
+Napi::Function jsCallback;
 
 TW_UINT16 dsmCallback(pTW_IDENTITY pOrigin, pTW_IDENTITY pDest, TW_UINT32 uiDG, TW_UINT16 uiDAT, TW_UINT16 uiMSG, TW_MEMREF pData) {
     std::cout << "Trigger callback" << std::endl;
@@ -695,11 +697,11 @@ TW_UINT16 TwainSession::setCallback(Napi::Env env,Napi::Function jsCallbackFun) 
     if (state != 4) {
         return TWRC_FAILURE;
     }
+    jsCallbackEnv = env;
+    jsCallback = jsCallbackFun;
     TW_CALLBACK callback = {0};
     callback.RefCon = 0;
     callback.CallBackProc = (TW_MEMREF) dsmCallback;
-    jsCallbackEnv = env;
-    jsCallback = jsCallbackFun;
     TW_UINT16 rc = entry(DG_CONTROL, DAT_CALLBACK, MSG_REGISTER_CALLBACK, (TW_MEMREF) &callback, &source);
     return rc;
 }

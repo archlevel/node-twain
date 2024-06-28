@@ -114,8 +114,9 @@ Napi::Value TwainSDK::openDataSource(const Napi::CallbackInfo &info) {
 }
 
 Napi::Value TwainSDK::setCallback(const Napi::CallbackInfo &info) {
+    Napi::Function jsFunction;
     Napi::Env env = info.Env();
-    Napi::Function jsFunction = NULL;
+
     if (info.Length() > 0) {
         jsFunction = info[0].As<Napi::Function>();
     }
@@ -319,7 +320,6 @@ Napi::Value TwainSDK::scan(const Napi::CallbackInfo &info) {
     Napi::Env env = info.Env();
     TW_UINT16 transfer = info[0].As<Napi::Number>().Uint32Value();
     std::string path = info[1].As<Napi::String>().Utf8Value();
-    Napi::Function jsFunction = NULL;
     if (info.Length() > 2) {
         jsFunction = info[2].As<Napi::Function>();
     }
