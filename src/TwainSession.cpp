@@ -707,10 +707,9 @@ TW_UINT16 TwainSession::setCallback(Napi::Env env,Napi::Function jsCallbackFun) 
     this->env = env;
     this->jsCallbackFun = jsCallbackFun;
     TW_CALLBACK callback = {0};
-    callback.RefCon = reinterpret_cast<TW_UINT32>(this); // 使用 this 指针作为 RefCon
-    callback.CallBackProc = reinterpret_cast<TW_MEMREF>(dsmCallback);
-    //callback.CallBackProc = (TW_MEMREF) dsmCallback;
-    TW_UINT16 rc = entry(DG_CONTROL, DAT_CALLBACK, MSG_REGISTER_CALLBACK, (TW_MEMREF) &callback/*即获取函数指针*/, &source);
+    callback.RefCon = (TW_MEMREF)this; // 将 this 指针传递给回调函数
+    callback.CallBackProc = (TW_MEMREF) dsmCallback;
+    TW_UINT16 rc = entry(DG_CONTROL, DAT_CALLBACK, MSG_REGISTER_CALLBACK, (TW_MEMREF) &callback, &source);
     return rc;
 }
 
