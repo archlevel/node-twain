@@ -768,8 +768,8 @@ typedef struct {
 #define TWDE_DEVICEREMOVED          9
 #define TWDE_IMAGECAPTURED          10
 #define TWDE_IMAGEDELETED           11
-#define TWDE_PAPERDOUBLEFEED        12
-#define TWDE_PAPERJAM               13
+#define TWDE_PAPERDOUBLEFEED        12 //表示检测到双重进纸错误（即一次进纸时送入了多张纸）
+#define TWDE_PAPERJAM               13 //表示检测到纸张卡纸
 #define TWDE_LAMPFAILURE            14
 #define TWDE_POWERSAVE              15
 #define TWDE_POWERSAVENOTIFY        16
@@ -1061,12 +1061,12 @@ typedef struct {
 #define TWJS_410                 6
 #define TWJS_311                 7
 
-/* CAP_PAPERHANDLING values */
-#define TWPH_NORMAL              0
-#define TWPH_FRAGILE             1
-#define TWPH_THICK               2
-#define TWPH_TRIFOLD             3
-#define TWPH_PHOTOGRAPH          4
+/* CAP_PAPERHANDLING values */ //表示设备支持的纸张处理选项
+#define TWPH_NORMAL              0 //表示设备的正常纸张处理模式
+#define TWPH_FRAGILE             1 //用于表示设备的纸张处理模式为易碎纸张处理
+#define TWPH_THICK               2 //用于表示设备的纸张处理模式为处理厚纸
+#define TWPH_TRIFOLD             3 //表示设备的纸张处理模式为三折纸处理
+#define TWPH_PHOTOGRAPH          4 //照片处理
 
 /* CAP_INDICATORSMODE values */
 #define TWCI_INFO                0
@@ -1932,7 +1932,7 @@ typedef struct {
 #define TWEI_FILESYSTEMSOURCE       0x1246
 #define TWEI_IMAGEMERGED            0x1247
 #define TWEI_MAGDATALENGTH          0x1248
-#define TWEI_PAPERCOUNT             0x1249
+#define TWEI_PAPERCOUNT             0x1249 //用于表示在操作中发生的纸张计数错误
 #define TWEI_PRINTERTEXT            0x124A
 #define TWEI_TWAINDIRECTMETADATA    0x124B
 
@@ -1986,8 +1986,8 @@ typedef struct {
 #define TWCC_FILEEXISTS         17
 #define TWCC_FILENOTFOUND       18
 #define TWCC_NOTEMPTY           19
-#define TWCC_PAPERJAM           20
-#define TWCC_PAPERDOUBLEFEED    21
+#define TWCC_PAPERJAM           20 //表示扫描设备或驱动程序检测到纸张卡纸的情况
+#define TWCC_PAPERDOUBLEFEED    21 //表示扫描设备或驱动程序检测到纸张双重进纸的情况
 #define TWCC_FILEWRITEERROR     22
 #define TWCC_CHECKDEVICEONLINE  23
 #define TWCC_INTERLOCK          24
@@ -2038,7 +2038,7 @@ typedef wchar_t           TW_UNI512[512],     FAR *pTW_UNI512;
 #define CAP_SUPPORTEDCAPSEXT      0x100c
 #define CAP_FILESYSTEM            //0x????
 #define CAP_PAGEMULTIPLEACQUIRE   0x1023
-#define CAP_PAPERBINDING          0x102f
+#define CAP_PAPERBINDING          0x102f //指定了设备如何处理扫描时的纸张装订方向或样式
 #define CAP_PASSTHRU              0x1031
 #define CAP_POWERDOWNTIME         0x1034
 #define ACAP_AUDIOFILEFORMAT      0x1201
