@@ -11,7 +11,7 @@ TwainSession::TwainSession()
 {}
 
 TW_UINT16 dsmCallback(pTW_IDENTITY pOrigin, pTW_IDENTITY pDest, TW_UINT32 uiDG, TW_UINT16 uiDAT, TW_UINT16 uiMSG, TW_MEMREF pData) {
-    TwainSession* self = reinterpret_cast<TwainSession*>(pData->RefCon); // 获取 TwainSession 实例
+    TwainSession* self = this;//reinterpret_cast<TwainSession*>(pData->RefCon); // 获取 TwainSession 实例
     std::cout << "Trigger callback" << std::endl;
     switch(uiMSG) {
         case MSG_CLOSEDSREQ: //数据源（扫描设备）请求关闭当前数据源
