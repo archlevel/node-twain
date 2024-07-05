@@ -316,16 +316,30 @@ Napi::Value TwainSDK::enableDataSource(const Napi::CallbackInfo &info) {
 }
 
 Napi::Value TwainSDK::scan(const Napi::CallbackInfo &info) {
-    Napi::Function jsFunction;
-    Napi::Number start;
+
     Napi::Env env = info.Env();
+
+    // 参数数量检查
+    if (info.Length() < 2) {
+        Napi::TypeError::New(env, "Wrong number of arguments").ThrowAsJavaScriptException();
+        return env.Null();
+    }
+
+    // 获取参数
     TW_UINT16 transfer = info[0].As<Napi::Number>().Uint32Value();
     std::string path = info[1].As<Napi::String>().Utf8Value();
-    if (info.Length() > 2) {
+
+    Napi::Function jsFunction;
+    Napi::Number start;
+
+    if (info.Length() > 2 && info[2].IsFunction()) {
         jsFunction = info[2].As<Napi::Function>();
     }
-    if(info.Length() > 3){
+
+    if (info.Length() > 3 && info[3].IsNumber()) {
         start = info[3].As<Napi::Number>();
+    } else {
+        start = Napi::Number::New(env, 1); // 如果没有提供start参数，设置默认值为1
     }
 
     session.enableDS();
@@ -335,16 +349,33 @@ Napi::Value TwainSDK::scan(const Napi::CallbackInfo &info) {
 }
 
 Napi::Value TwainSDK::rescan(const Napi::CallbackInfo &info) {
-    Napi::Function jsFunction;
-    Napi::Array array;
     Napi::Env env = info.Env();
+
+    // 参数数量检查
+    if (info.Length() < 2) {
+        Napi::TypeError::New(env, "Wrong number of arguments").ThrowAsJavaScriptException();
+        return env.Null();
+    }
+
+    // 获取参数
     TW_UINT16 transfer = info[0].As<Napi::Number>().Uint32Value();
     std::string path = info[1].As<Napi::String>().Utf8Value();
-    if (info.Length() > 2) {
+
+    Napi::Function jsFunction;
+    Napi::Array array;
+
+    if (info.Length() > 2 && info[2].IsFunction()) {
         jsFunction = info[2].As<Napi::Function>();
+    } else {
+        jsFunction = Napi::Function::New(env, [](const Napi::CallbackInfo &info) {
+            return info.Env().Null();
+        }); // 如果没有提供jsFunction，设置一个空的默认函数
     }
-    if(info.Length() > 3){
+
+    if (info.Length() > 3 && info[3].IsArray()) {
         array = info[3].As<Napi::Array>();
+    } else {
+        array = Napi::Array::New(env); // 如果没有提供array，设置一个空的默认数组
     }
 
     session.enableDS();

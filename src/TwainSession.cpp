@@ -1011,6 +1011,10 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
     std::cout << ext << std::endl;
 
     TW_UINT32 numItems = array.Length();
+    if(numItems<1){
+        std::cout << "rescan failed" << std::endl;
+        return;
+    }
 
     long arrayIdx = 0;
 
@@ -1077,7 +1081,10 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
                     }
                 }
                 else {
-                    arrayIdx = arrayIdx + 1;
+                    arrayIdx++;
+                    if (arrayIdx >= numItems) {
+                        return;
+                    }
                     idx = array.Get(arrayIdx).As<Napi::Number>().Int64Value();
                     strcpy(fileXfer.FileName, (total, left, path +"_"+std::to_string(idx) + ext).c_str());
                 }
