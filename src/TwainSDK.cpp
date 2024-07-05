@@ -326,7 +326,7 @@ Napi::Value TwainSDK::scan(const Napi::CallbackInfo &info) {
     }
 
     session.enableDS();
-    session.scan(transfer, path, env, jsFunction,index);
+    session.scan(transfer, path, env, jsFunction);
     session.disableDS();
     return Napi::Boolean::New(env, true);
 }
