@@ -119,10 +119,21 @@ describe('quick', () => {
         // pSource
         // session.enableDataSource()
 
-        // pSource
-        session.scan(twain.TWSX_FILE, "C:\\Users\\A11200321050133\\Documents\\Scanned Documents\\imageFromScanner",(rcCode, data) => {
-            console.log('收到回调:',total, left, data);
-        })
+        // pSource 普通扫描
+        session.scan(twain.TWSX_FILE,
+               "C:\\Users\\A11200321050133\\Documents\\Scanned Documents\\imageFromScanner",
+                (rcCode, data) => {
+                    console.log('收到回调:',total, left, data);
+                }
+        );
+        // pSource 重新扫描
+        session.rescan(twain.TWSX_FILE,
+                       "C:\\Users\\A11200321050133\\Documents\\Scanned Documents\\imageFromScanner",
+                        (rcCode, data) => { //回调函数
+                            console.log('收到回调:',total, left, data);
+                        },
+                        [1,3,5,6]//待重新扫描的 index
+        );
         // pOneValue
         session.setCapability(cap, TWON_ONEVALUE, {"itemType":1,"value": 1});
 
@@ -130,7 +141,7 @@ describe('quick', () => {
         session.setCapability(cap, TWON_RANGE, {"itemType": 1,"minValue":1 ,"maxValue":1 ,"stepSize":1 ,"defaultValue":1 ,"currentValue": 1});
 
         // pEnumValue
-        session.setCapability(cap, TWON_ENUMERATION, {"itemType": 1,"defaultValue": 1,"currentValue": 1,"itemList":[1,2] })
+        session.setCapability(cap, TWON_ENUMERATION, {"itemType": 1,"defaultValue": 1,"currentValue": 1,"itemList":[1,2] });
 
         // pArrayValue
         session.setCapability(cap, TWON_ARRAY, {"itemType": 1,"itemList":[1,1,2,3]});//数组第一个元素为itemType，后面元素为数据值
