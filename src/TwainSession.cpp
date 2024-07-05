@@ -769,7 +769,7 @@ TW_UINT16 TwainSession::getImageInfo() {
     return rc;
 }
 
-TW_UINT16 TwainSession::scan(TW_UINT32 mech, std::string path, Napi::Env env, Napi::Function callback) {
+TW_UINT16 TwainSession::scan(TW_UINT32 mech, std::string path, Napi::Env env, Napi::Function callback,Napi::Number index) {
     if(state != 6) {
         std::cout << "A scan cannot be initiated unless we are in state 6" << std::endl;
         return TWRC_FAILURE;
@@ -793,7 +793,7 @@ TW_UINT16 TwainSession::scan(TW_UINT32 mech, std::string path, Napi::Env env, Na
             if( rc == TWRC_SUCCESS){
                 pTW_ONEVALUE pEnum = (pTW_ONEVALUE)lockMemory(cap.hContainer);
                 std::cout << pEnum->Item << std::endl;
-                transferFile(pEnum->Item, path,env, callback);
+                transferFile(pEnum->Item, path,env, callback,index);
             }
             break;
         }
@@ -854,11 +854,14 @@ void TwainSession::transferNative() {
     return;
 }
 
-void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::Env env, Napi::Function callback) {
+void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::Env env, Napi::Function callback,Napi::Number index) {
     std::cout << "starting a TWSX_FILE transfer..." << std::endl;
     std::string ext = convertImageFileFormatToExt(fileFormat);
     std::cout << ext << std::endl;
-    long idx = 1;
+    long idx = index.IsUndefined() || index.IsNull() ? 1 : index.Int64Value();
+    if (idx < 1) {
+        idx = 1;
+    }
     bool bPendingXfers = true;
     TW_UINT16 rc = TWRC_SUCCESS;
     TW_SETUPFILEXFER fileXfer;
