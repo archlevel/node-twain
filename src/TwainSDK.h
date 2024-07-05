@@ -38,6 +38,8 @@ public:
 
     virtual Napi::Value scan(const Napi::CallbackInfo &info);
 
+    virtual Napi::Value rescan(const Napi::CallbackInfo &info);
+
     virtual Napi::Value TwainSDK::release(const Napi::CallbackInfo& info);
 
 private:

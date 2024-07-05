@@ -44,7 +44,11 @@ Napi::Function registerTwainSDK(Napi::Env env) {
                     "scan",
                     static_cast<napi_property_attributes>(napi_writable | napi_configurable)
             ),
-              TwainSDK::InstanceMethod<&TwainSDK::release>(
+            TwainSDK::InstanceMethod<&TwainSDK::rescan>(
+                                "rescan",
+                    static_cast<napi_property_attributes>(napi_writable | napi_configurable)
+            ),
+            TwainSDK::InstanceMethod<&TwainSDK::release>(
                     "release",
                     static_cast<napi_property_attributes>(napi_writable | napi_configurable)
             ),

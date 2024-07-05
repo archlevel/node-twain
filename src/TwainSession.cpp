@@ -526,7 +526,7 @@ TW_UINT16 TwainSession::setArrayCap(TW_CAPABILITY &cap, Napi::Object obj) {
     cap.ConType = TWON_ARRAY;
     Napi::Array array = obj.Get("itemList").As<Napi::Array>();
 
-    TW_UINT32 numItems = array.Length();  // 减去第一个元素（itemType）
+    TW_UINT32 numItems = array.Length();
     TW_UINT32 itemSize = sizeof(TW_UINT32); // 默认项大小为 TW_UINT32，你可以根据不同的类型进行调整
     switch (itemType) {
         case TWTY_INT8:
@@ -769,7 +769,7 @@ TW_UINT16 TwainSession::getImageInfo() {
     return rc;
 }
 
-TW_UINT16 TwainSession::scan(TW_UINT32 mech, std::string path, Napi::Env env, Napi::Function callback,Napi::Number index) {
+TW_UINT16 TwainSession::scan(TW_UINT32 mech, std::string path, Napi::Env env, Napi::Function callback) {
     if(state != 6) {
         std::cout << "A scan cannot be initiated unless we are in state 6" << std::endl;
         return TWRC_FAILURE;
@@ -793,7 +793,47 @@ TW_UINT16 TwainSession::scan(TW_UINT32 mech, std::string path, Napi::Env env, Na
             if( rc == TWRC_SUCCESS){
                 pTW_ONEVALUE pEnum = (pTW_ONEVALUE)lockMemory(cap.hContainer);
                 std::cout << pEnum->Item << std::endl;
-                transferFile(pEnum->Item, path,env, callback,index);
+                transferFile(pEnum->Item, path,env, callback);
+            }
+            break;
+        }
+        case TWSX_MEMORY: {
+            transferMemory();
+            break;
+        }
+        case TWSX_MEMFILE: {
+            transferMemory();
+            break;
+        }
+    }
+    return TWRC_SUCCESS;
+}
+
+TW_UINT16 TwainSession::rescan(TW_UINT32 mech, std::string path, Napi::Env env, Napi::Function callback,Napi::Array array) {
+    if(state != 6) {
+        std::cout << "A scan cannot be initiated unless we are in state 6" << std::endl;
+        return TWRC_FAILURE;
+    }
+
+    TW_UINT16 rc = getImageInfo();
+    if (TWRC_SUCCESS != rc) {
+        return rc;
+    };
+
+    switch (mech) {
+        case TWSX_NATIVE: {
+            transferNative();
+            break;
+        }
+        case TWSX_FILE: {
+            TW_CAPABILITY cap;
+            cap.Cap = ICAP_IMAGEFILEFORMAT;
+            cap.hContainer = 0;
+            TW_UINT16 rc = getCurrentCap(cap);
+            if( rc == TWRC_SUCCESS){
+                pTW_ONEVALUE pEnum = (pTW_ONEVALUE)lockMemory(cap.hContainer);
+                std::cout << pEnum->Item << std::endl;
+                transferFile(pEnum->Item, path,env, callback,array);
             }
             break;
         }
@@ -854,14 +894,11 @@ void TwainSession::transferNative() {
     return;
 }
 
-void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::Env env, Napi::Function callback,Napi::Number index) {
+void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::Env env, Napi::Function callback) {
     std::cout << "starting a TWSX_FILE transfer..." << std::endl;
     std::string ext = convertImageFileFormatToExt(fileFormat);
     std::cout << ext << std::endl;
-    long idx = index.IsUndefined() || index.IsNull() ? 1 : index.Int64Value();
-    if (idx < 1) {
-        idx = 1;
-    }
+    long idx = 1;
     bool bPendingXfers = true;
     TW_UINT16 rc = TWRC_SUCCESS;
     TW_SETUPFILEXFER fileXfer;
@@ -924,6 +961,121 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
                 }
                 else {
                     idx = idx + 1;
+                    strcpy(fileXfer.FileName, (total, left, path +"_"+std::to_string(idx) + ext).c_str());
+                }
+            } else {
+                std::cerr << "Failed to properly end the transfer" << std::endl;
+                bPendingXfers = false;
+            }
+        }
+        else if (rc == TWRC_CANCEL) {
+            std::cerr << "Cancel to transfer image" << std::endl;
+            std::cerr << "Cancel total" << std::to_string(total) << std::endl;
+            std::cerr << "Cancel left" << std::to_string(left) << std::endl;
+            std::cerr << "Cancel reason" << "cancel" << std::endl;
+            if(callback != NULL){
+                //多参数回调
+                callback.Call({ Napi::Number::New(env,rc),Napi::String::New(env,"cancel") });
+            }
+            break;
+        }
+        else if (rc == TWRC_FAILURE
+                || rc == TWRC_DSEVENT
+                || rc == TWRC_NOTDSEVENT
+                || rc == TWRC_ENDOFLIST
+                || rc == TWRC_INFONOTSUPPORTED
+                || rc == TWRC_BUSY
+                || rc == TWRC_DATANOTAVAILABLE
+                || rc == TWRC_SCANNERLOCKED) {
+            std::cerr << "Failed to transfer image" << std::endl;
+            std::cerr << "Failed total"<< std::to_string(total) << std::endl;
+            std::cerr << "Failed left" << std::to_string(left) << std::endl;
+            std::cerr << "Failed reason" << "fail" << std::endl;
+            if(callback != NULL){
+                //多参数回调
+                callback.Call({ Napi::Number::New(env,rc),Napi::String::New(env,"fail") });
+            }
+            break;
+        }
+    }
+    state = 5;
+    return;
+}
+
+void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::Env env, Napi::Function callback,Napi::Array array) {
+    std::cout << "starting a TWSX_FILE transfer..." << std::endl;
+    std::string ext = convertImageFileFormatToExt(fileFormat);
+    std::cout << ext << std::endl;
+
+    TW_UINT32 numItems = array.Length();
+
+    long arrayIdx = 0;
+
+    long idx = array.Get(arrayIdx).As<Napi::Number>.Int64Value();//
+
+    bool bPendingXfers = true;
+    TW_UINT16 rc = TWRC_SUCCESS;
+    TW_SETUPFILEXFER fileXfer;
+    memset(&fileXfer, 0, sizeof(fileXfer));
+    std::cout << "Test::" << fileXfer.Format << std::endl;
+    fileXfer.Format = fileFormat;
+
+    strcpy(fileXfer.FileName, (path+ +"_" + std::to_string(idx) + ext).c_str());
+
+    std::cout << "Test::" << "strcpy" << std::endl;
+   /*
+    * 计算总量
+    */
+    long total = 0;
+    long left = 0;
+    TW_PENDINGXFERS pendXfers;
+    memset(&pendXfers, 0, sizeof(pendXfers));
+    std::cout << "Test::" << "memset" << std::endl;
+    rc = entry(DG_CONTROL, DAT_PENDINGXFERS, MSG_ENDXFER, (TW_MEMREF)&pendXfers, pSource);
+    if (rc == TWRC_SUCCESS) {
+        std::cout << "Test::" << "entry success" << std::endl;
+        total = pendXfers.Count;
+        left = total;
+    }
+    else {
+        std::cout << "Test::" << std::to_string(rc) << std::endl;
+    }
+
+    while (bPendingXfers) {
+
+        rc = entry(DG_CONTROL, DAT_SETUPFILEXFER, MSG_SET, (TW_MEMREF) &fileXfer, pSource);
+        if (rc != TWRC_SUCCESS) {
+            std::cerr << "Error while trying to setup the file transfer" << std::endl;
+            break;
+        }
+
+        rc = entry(DG_IMAGE, DAT_IMAGEFILEXFER, MSG_GET, NULL, pSource);
+        if (rc == TWRC_XFERDONE) {
+            // rc = entry(DG_CONTROL, DAT_SETUPFILEXFER, MSG_GETDEFAULT, (TW_MEMREF) &fileXfer, pSource);
+            std::cout << "file saved..." << fileXfer.FileName << std::endl;
+            std::cout << "Checking to see if there are more images to transfer..." << std::endl;
+
+            if(callback != NULL){
+                //多参数回调
+                callback.Call({ Napi::Number::New(env,rc),Napi::String::New(env,path + +"_" + std::to_string(idx) + ext) });
+
+            }
+
+            memset(&pendXfers, 0, sizeof(pendXfers));
+            rc = entry(DG_CONTROL, DAT_PENDINGXFERS, MSG_ENDXFER, (TW_MEMREF) &pendXfers, pSource);
+            left = pendXfers.Count;
+            std::cout << "transfer reason" << std::to_string(rc) << std::endl;
+            if (rc == TWRC_SUCCESS) {
+                if (left == 0) {
+                    bPendingXfers = false;//所有结束
+                    if(callback != NULL){
+                        //多参数回调
+                        callback.Call({ Napi::Number::New(env,rc),Napi::String::New(env,"finish") });
+                    }
+                }
+                else {
+                    arrayIdx = arrayIdx + 1;
+                    idx = array.Get(arrayIdx).As<Napi::Number>.Int64Value();//
                     strcpy(fileXfer.FileName, (total, left, path +"_"+std::to_string(idx) + ext).c_str());
                 }
             } else {

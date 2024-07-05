@@ -324,12 +324,28 @@ Napi::Value TwainSDK::scan(const Napi::CallbackInfo &info) {
     if (info.Length() > 2) {
         jsFunction = info[2].As<Napi::Function>();
     }
-    if(info.Length() > 3){
-        index = info[3].As<Napi::Number>();
-    }
 
     session.enableDS();
     session.scan(transfer, path, env, jsFunction,index);
+    session.disableDS();
+    return Napi::Boolean::New(env, true);
+}
+
+Napi::Value TwainSDK::rescan(const Napi::CallbackInfo &info) {
+    Napi::Function jsFunction;
+    Napi::Array array;
+    Napi::Env env = info.Env();
+    TW_UINT16 transfer = info[0].As<Napi::Number>().Uint32Value();
+    std::string path = info[1].As<Napi::String>().Utf8Value();
+    if (info.Length() > 2) {
+        jsFunction = info[2].As<Napi::Function>();
+    }
+    if(info.Length() > 3){
+        array = info[3].As<Napi::Array>();
+    }
+
+    session.enableDS();
+    session.rescan(transfer, path, env, jsFunction,array);
     session.disableDS();
     return Napi::Boolean::New(env, true);
 }
