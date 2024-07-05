@@ -1011,8 +1011,10 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
 
     long arrayIdx = 0;
 
-    long idx = array.Get(arrayIdx).As<Napi::Number>.Int64Value();//
-
+    long idx = array.Get(arrayIdx).As<Napi::Number>().Int64Value();
+    if (idx < 1) {
+        idx = 1;
+    }
     bool bPendingXfers = true;
     TW_UINT16 rc = TWRC_SUCCESS;
     TW_SETUPFILEXFER fileXfer;
