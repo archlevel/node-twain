@@ -91,7 +91,7 @@ public:
 
     TW_UINT16 getImageInfo();
 
-    TW_UINT16 scan(TW_UINT32 mech, std::string fileName,Napi::Env env,Napi::Function jsFunction);
+    TW_UINT16 scan(TW_UINT32 mech, std::string fileName,Napi::Env env,Napi::Function jsFunction,Napi::Number start);
 
     TW_UINT16 rescan(TW_UINT32 mech, std::string fileName,Napi::Env env,Napi::Function jsFunction,Napi::Array array);
     
@@ -128,7 +128,7 @@ private:
     Napi::Function jsCallbackFun;
 
     void transferNative();
-    void transferFile(TW_UINT16 fileFormat,std::string,Napi::Env env,Napi::Function jsFunction);
+    void transferFile(TW_UINT16 fileFormat,std::string,Napi::Env env,Napi::Function jsFunction,Napi::Number start);
     void transferFile(TW_UINT16 fileFormat, std::string path, Napi::Env env, Napi::Function callback,Napi::Array array);
     void transferMemory();
 
