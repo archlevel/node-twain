@@ -935,6 +935,10 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
         rc = entry(DG_CONTROL, DAT_SETUPFILEXFER, MSG_SET, (TW_MEMREF) &fileXfer, pSource);
         if (rc != TWRC_SUCCESS) {
             std::cerr << "Error while trying to setup the file transfer" << std::endl;
+            if(callback != NULL){
+                //多参数回调
+                callback.Call({ Napi::Number::New(env,rc),Napi::String::New(env,"fail") });
+            }
             break;
         }
 
@@ -1053,6 +1057,10 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
         rc = entry(DG_CONTROL, DAT_SETUPFILEXFER, MSG_SET, (TW_MEMREF) &fileXfer, pSource);
         if (rc != TWRC_SUCCESS) {
             std::cerr << "Error while trying to setup the file transfer" << std::endl;
+            if(callback != NULL){
+                //多参数回调
+                callback.Call({ Napi::Number::New(env,rc),Napi::String::New(env,"fail") });
+            }
             break;
         }
 
