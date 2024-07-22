@@ -124,6 +124,16 @@ Napi::Value TwainSDK::setCallback(const Napi::CallbackInfo &info) {
     return Napi::Boolean::New(env, true);
 }
 
+/**
+ * The following structures combinations are implimented and found in the TWAIN specifications
+ *               BOOL  INT8  INT16  INT32  UINT8  UINT16  UINT32  STR32  STR64  STR128  STR255  STR1024  UNI512  FIX32  FRAME
+ * OneValue      x           x      x             x       x       x             x       x                        x      x
+ * Enumeration   x           x                    x       x       x                     x                        x      x
+ * Range                     x      x             x       x                                                      x
+ *
+ * @param info
+ * @return
+ */
 Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
     Napi::Env env = info.Env();
 
@@ -138,12 +148,6 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
     cap.Cap = CAP;
     cap.hContainer = 0;
     TW_UINT16 rc = session.getCap(cap);
-// The following structures combinations are implimented and found in the TWAIN specifications
-//              BOOL  INT8  INT16  INT32  UINT8  UINT16  UINT32  STR32  STR64  STR128  STR255  STR1024  UNI512  FIX32  FRAME
-// OneValue      x           x      x             x       x       x             x       x                        x      x
-// Array                                   x      x       x       x                                              x      x
-// Enumeration   x           x                    x       x       x                     x                        x      x
-// Range                     x      x             x       x                                                      x
     if (rc != TWRC_SUCCESS) {
         return Napi::Boolean::New(env, false);
     }
