@@ -124,8 +124,9 @@ describe('quick', () => {
                "C:\\Users\\A11200321050133\\Documents\\Scanned Documents\\imageFromScanner",
                 (rcCode, data) => {
                     console.log('收到回调:',rcCode, data);
-                },
-            1 //第一次扫描时：startIdx=1；中途暂停了扫描，继续扫描时startIdx=lastId+1
+                }, 
+                1 
+                //第一次扫描时：startIdx=1；中途暂停了扫描，继续扫描时startIdx=lastId+1
         );
         // pSource 重新扫描
         session.rescan(twain.TWSX_FILE,

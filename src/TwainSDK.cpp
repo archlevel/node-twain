@@ -322,7 +322,7 @@ Napi::Value TwainSDK::enableDataSource(const Napi::CallbackInfo &info) {
 Napi::Value TwainSDK::scan(const Napi::CallbackInfo &info) {
 
     Napi::Env env = info.Env();
-
+    std::cout << "start scan" << std::endl;
     // 参数数量检查
     if (info.Length() < 2) {
         Napi::TypeError::New(env, "Wrong number of arguments").ThrowAsJavaScriptException();
@@ -345,7 +345,6 @@ Napi::Value TwainSDK::scan(const Napi::CallbackInfo &info) {
     } else {
         start = Napi::Number::New(env, 1); // 如果没有提供start参数，设置默认值为1
     }
-
     session.enableDS();
     session.scan(transfer, path, env, jsFunction,start);
     session.disableDS();

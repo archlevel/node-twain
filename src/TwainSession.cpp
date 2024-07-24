@@ -774,18 +774,20 @@ TW_UINT16 TwainSession::scan(TW_UINT32 mech, std::string path, Napi::Env env, Na
         std::cout << "A scan cannot be initiated unless we are in state 6" << std::endl;
         return TWRC_FAILURE;
     }
-
+    std::cout << "before getImageInfo" << std::endl;
     TW_UINT16 rc = getImageInfo();
     if (TWRC_SUCCESS != rc) {
         return rc;
     };
-
+    std::cout << "before transfer" << std::endl;
     switch (mech) {
         case TWSX_NATIVE: {
+            std::cout << "mech TWSX_NATIVE" << std::endl;
             transferNative();
             break;
         }
         case TWSX_FILE: {
+            std::cout << "mech TWSX_FILE" << std::endl;
             TW_CAPABILITY cap;
             cap.Cap = ICAP_IMAGEFILEFORMAT;
             cap.hContainer = 0;
@@ -798,10 +800,12 @@ TW_UINT16 TwainSession::scan(TW_UINT32 mech, std::string path, Napi::Env env, Na
             break;
         }
         case TWSX_MEMORY: {
+            std::cout << "mech TWSX_MEMORY" << std::endl;
             transferMemory();
             break;
         }
         case TWSX_MEMFILE: {
+            std::cout << "mech TWSX_MEMFILE" << std::endl;
             transferMemory();
             break;
         }
@@ -896,18 +900,21 @@ void TwainSession::transferNative() {
 
 void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::Env env, Napi::Function callback,Napi::Number start) {
     std::cout << "starting a TWSX_FILE transfer..." << std::endl;
-    std::string ext = convertImageFileFormatToExt(fileFormat);
-    std::cout << ext << std::endl;
-    long idx = start.IsUndefined() || start.IsNull() ? 1 : start.Int64Value();
-    if (idx < 1) {
-        idx = 1;
-    }
     bool bPendingXfers = true;
     TW_UINT16 rc = TWRC_SUCCESS;
     TW_SETUPFILEXFER fileXfer;
-    memset(&fileXfer, 0, sizeof(fileXfer));
-    std::cout << "Test::" << fileXfer.Format << std::endl;
+
+    long idx = start.IsUndefined() || start.IsNull() ? 1 : start.Int64Value();
+    if (idx < 1) {
+      idx = 1;
+    }
+
+    std::string ext = convertImageFileFormatToExt(fileFormat);
+    std::cout << "Test::ext " << ext << std::endl;
     fileXfer.Format = fileFormat;
+
+    memset(&fileXfer, 0, sizeof(fileXfer));
+    std::cout << "Test::after " << fileXfer.Format << std::endl;
 
     strcpy(fileXfer.FileName, (path+ +"_" + std::to_string(idx) + ext).c_str());
 
@@ -915,20 +922,18 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
    /*
     * 计算总量
     */
-    long total = 0;
     long left = 0;
     TW_PENDINGXFERS pendXfers;
-    memset(&pendXfers, 0, sizeof(pendXfers));
+    /*memset(&pendXfers, 0, sizeof(pendXfers));
     std::cout << "Test::" << "memset" << std::endl;
     rc = entry(DG_CONTROL, DAT_PENDINGXFERS, MSG_ENDXFER, (TW_MEMREF)&pendXfers, pSource);
     if (rc == TWRC_SUCCESS) {
+        left = pendXfers.Count;
         std::cout << "Test::" << "entry success" << std::endl;
-        total = pendXfers.Count;
-        left = total;
     }
     else {
         std::cout << "Test::" << std::to_string(rc) << std::endl;
-    }
+    }*/
 
     while (bPendingXfers) {
 
@@ -968,7 +973,7 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
                 }
                 else {
                     idx = idx + 1;
-                    strcpy(fileXfer.FileName, (total, left, path +"_"+std::to_string(idx) + ext).c_str());
+                    strcpy(fileXfer.FileName, (path +"_"+std::to_string(idx) + ext).c_str());
                 }
             } else {
                 std::cerr << "Failed to properly end the transfer" << std::endl;
@@ -977,7 +982,6 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
         }
         else if (rc == TWRC_CANCEL) {
             std::cerr << "Cancel to transfer image" << std::endl;
-            std::cerr << "Cancel total" << std::to_string(total) << std::endl;
             std::cerr << "Cancel left" << std::to_string(left) << std::endl;
             std::cerr << "Cancel reason" << "cancel" << std::endl;
             if(callback != NULL){
@@ -995,7 +999,6 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
                 || rc == TWRC_DATANOTAVAILABLE
                 || rc == TWRC_SCANNERLOCKED) {
             std::cerr << "Failed to transfer image" << std::endl;
-            std::cerr << "Failed total"<< std::to_string(total) << std::endl;
             std::cerr << "Failed left" << std::to_string(left) << std::endl;
             std::cerr << "Failed reason" << "fail" << std::endl;
             if(callback != NULL){
