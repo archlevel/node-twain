@@ -924,16 +924,6 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
     */
     long left = 0;
     TW_PENDINGXFERS pendXfers;
-    /*memset(&pendXfers, 0, sizeof(pendXfers));
-    std::cout << "Test::" << "memset" << std::endl;
-    rc = entry(DG_CONTROL, DAT_PENDINGXFERS, MSG_ENDXFER, (TW_MEMREF)&pendXfers, pSource);
-    if (rc == TWRC_SUCCESS) {
-        left = pendXfers.Count;
-        std::cout << "Test::" << "entry success" << std::endl;
-    }
-    else {
-        std::cout << "Test::" << std::to_string(rc) << std::endl;
-    }*/
 
     while (bPendingXfers) {
 
