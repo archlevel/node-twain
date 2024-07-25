@@ -903,6 +903,11 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
     bool bPendingXfers = true;
     TW_UINT16 rc = TWRC_SUCCESS;
     TW_SETUPFILEXFER fileXfer;
+    /*
+     * 计算余量
+     */
+    long left = 0;
+    TW_PENDINGXFERS pendXfers;
 
     long idx = start.IsUndefined() || start.IsNull() ? 1 : start.Int64Value();
     if (idx < 1) {
@@ -919,11 +924,6 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
     strcpy(fileXfer.FileName, (path+ +"_" + std::to_string(idx) + ext).c_str());
 
     std::cout << "Test::" << "strcpy" << std::endl;
-   /*
-    * 计算总量
-    */
-    long left = 0;
-    TW_PENDINGXFERS pendXfers;
 
     while (bPendingXfers) {
 
