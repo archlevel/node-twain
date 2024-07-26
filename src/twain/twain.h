@@ -2056,11 +2056,28 @@ typedef wchar_t           TW_UNI512[512],     FAR *pTW_UNI512;
 #define TWFS_RECURSIVEDELETE  1
 
 /* ICAP_PIXELTYPE values (PT_ means Pixel Type) */
-#define TWPT_SRGB64     11
-#define TWPT_BGR        12
-#define TWPT_CIELAB     13
-#define TWPT_CIELUV     14
-#define TWPT_YCBCR      15
+#define TWPT_SRGB64     11 //sRGB 是数字成像中使用的标准 RGB（红、绿、蓝）颜色空间，定义了在显示器和其他数字设备上可以显示的颜色范围。
+
+#define TWPT_BGR        12 //BGR（蓝、绿、红）是一种颜色编码顺序，与通常的RGB（红、绿、蓝）顺序相反。BGR 在某些图像处理库和图形硬件中使用较为普遍
+/**
+ L* 表示亮度（从0到100）
+ a* 表示从绿色到红色的色调
+ b* 表示从蓝色到黄色的色调
+ */
+#define TWPT_CIELAB     13 //CIELAB颜色空间是由国际照明委员会（CIE）在1976年定义的一种颜色空间，它旨在更接近人类视觉感知的方式来表示颜色
+/**
+在 CIELUV 颜色空间中，颜色由三个值表示：
+L ∗ 表示亮度（从0到100）。
+𝑢∗ u∗ 是表示色度的两个坐标，定义了色彩在色度图上的位置。
+*/
+#define TWPT_CIELUV     14 //CIELUV 是由国际照明委员会 (CIE) 在1976年定义的一种颜色空间，设计目的是改进对色彩的感知和比较
+/**
+在 YCbCr 颜色空间中，颜色由三个分量表示：
+Y 表示亮度（Luma），即图像的明亮程度。
+Cb 表示蓝色色度分量（Chroma blue-difference），即蓝色与亮度的差异。
+Cr 表示红色色度分量（Chroma red-difference），即红色与亮度的差异。
+*/
+#define TWPT_YCBCR      15 //YCbCr 是一种用于数字视频和图像压缩的颜色空间，特别常用于视频压缩标准如 MPEG 和 JPEG。它通过将 RGB 颜色空间转换为亮度和色度分量来减少带宽需求和提升压缩效率。
 
 /* ICAP_SUPPORTEDSIZES values (SS_ means Supported Sizes) */
 #define TWSS_B                8
