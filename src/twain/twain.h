@@ -1787,8 +1787,8 @@ typedef struct {
 #define ICAP_FRAMES                       0x1114
 #define ICAP_XNATIVERESOLUTION            0x1116
 #define ICAP_YNATIVERESOLUTION            0x1117
-#define ICAP_XRESOLUTION                  0x1118
-#define ICAP_YRESOLUTION                  0x1119
+#define ICAP_XRESOLUTION                  0x1118 //分辨率
+#define ICAP_YRESOLUTION                  0x1119 //分辨率
 #define ICAP_MAXFRAMES                    0x111a
 #define ICAP_TILES                        0x111b
 #define ICAP_BITORDER                     0x111c
