@@ -319,7 +319,7 @@ Napi::Value TwainSDK::enableDataSource(const Napi::CallbackInfo &info) {
     return deferred.Promise();
 }
 
-Napi::Value TwainSDK::enableDataSource(const Napi::CallbackInfo &info) {
+Napi::Value TwainSDK::disableDataSource(const Napi::CallbackInfo &info) {
     Napi::Env env = info.Env();
     Napi::Promise::Deferred deferred = Napi::Promise::Deferred::New(env);
     TW_UINT16 rc = session.disableDS();
