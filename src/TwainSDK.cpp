@@ -319,6 +319,18 @@ Napi::Value TwainSDK::enableDataSource(const Napi::CallbackInfo &info) {
     return deferred.Promise();
 }
 
+Napi::Value TwainSDK::enableDataSource(const Napi::CallbackInfo &info) {
+    Napi::Env env = info.Env();
+    Napi::Promise::Deferred deferred = Napi::Promise::Deferred::New(env);
+    TW_UINT16 rc = session.disableDS();
+    if (rc == TWRC_SUCCESS) {
+        deferred.Resolve(Napi::String::New(info.Env(), "OK"));
+    } else {
+        deferred.Reject(Napi::String::New(info.Env(), "Reject"));
+    }
+    return deferred.Promise();
+}
+
 Napi::Value TwainSDK::scan(const Napi::CallbackInfo &info) {
 
     Napi::Env env = info.Env();
@@ -345,9 +357,7 @@ Napi::Value TwainSDK::scan(const Napi::CallbackInfo &info) {
     } else {
         start = Napi::Number::New(env, 1); // 如果没有提供start参数，设置默认值为1
     }
-    session.enableDS();
     session.scan(transfer, path, env, jsFunction,start);
-    session.disableDS();
     return Napi::Boolean::New(env, true);
 }
 
@@ -380,10 +390,7 @@ Napi::Value TwainSDK::rescan(const Napi::CallbackInfo &info) {
     } else {
         array = Napi::Array::New(env); // 如果没有提供array，设置一个空的默认数组
     }
-
-    session.enableDS();
     session.rescan(transfer, path, env, jsFunction,array);
-    session.disableDS();
     return Napi::Boolean::New(env, true);
 }
 
