@@ -914,28 +914,59 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
       idx = 1;
     }
 
+
     std::string ext = convertImageFileFormatToExt(fileFormat);
     std::cout << "Test::ext " << ext << std::endl;
-    fileXfer.Format = fileFormat;
-
     memset(&fileXfer, 0, sizeof(fileXfer));
+    // fileXfer.Format = fileFormat;
+    fileXfer.Format = 2;//TWFF_BMP;  TWFF_JP2
+    fileXfer.VRefNum = 0;
+    std::string fullPath = path + "_" + std::to_string(idx) + ext;
+    if (fullPath.length() < sizeof(fileXfer.FileName)) {
+        // std::cout << "Testfz::before " << fullPath.c_str() << std::endl;
+        // 将拼接后的字符串复制到 TW_STR255
+        strcpy(fileXfer.FileName, fullPath.c_str());
+
+        // std::cout << "Testfz::after " << fileXfer.FileName << std::endl;
+    } else {
+        // 如果超过了最大长度，可以采取截断或其他处理方式
+        std::cerr << "File path is too long to fit in TW_STR255." << std::endl;
+    }
+
+    // strcpy(fileXfer.FileName, (path+ +"_" + std::to_string(idx) + ext).c_str());
+    std::cout << "Test::afterfz " << fileXfer.Format << std::endl;
+
     std::cout << "Test::after " << fileXfer.Format << std::endl;
 
-    strcpy(fileXfer.FileName, (path+ +"_" + std::to_string(idx) + ext).c_str());
+    // strcpy(fileXfer.FileName, (path+ +"_" + std::to_string(idx) + ext).c_str());
 
     std::cout << "Test::" << "strcpy" << std::endl;
 
     while (bPendingXfers) {
-
-        rc = entry(DG_CONTROL, DAT_SETUPFILEXFER, MSG_SET, (TW_MEMREF) &fileXfer, pSource);
-        if (rc != TWRC_SUCCESS) {
-            std::cerr << "Error while trying to setup the file transfer" << std::endl;
-            if(callback != NULL){
-                //多参数回调
-                callback.Call({ Napi::Number::New(env,rc),Napi::String::New(env,"fail") });
-            }
-            break;
+    // printf("***** %s-%s--%d--%d.\n",  fullPath.c_str(), fileXfer.FileName, fileXfer.Format, fileXfer.VRefNum);
+    rc = entry(DG_CONTROL, DAT_SETUPFILEXFER, MSG_SET, (TW_MEMREF) &fileXfer, pSource);
+    if (rc != TWRC_SUCCESS) {
+        std::cerr << "Error while trying to setup the file rename" << std::endl;
+        if(callback != NULL){
+            //多参数回调
+            callback.Call({ Napi::Number::New(env,rc),Napi::String::New(env,"fail") });
         }
+        break;
+    }
+
+        // starting a TWSX_FILE transfer...
+    // Test::ext .bmp
+    // Test::after 0
+    // Test::strcpy
+    // Triplet:DG_CONTROL / DAT_SETUPFILEXFER / MSG_SET
+    // RC:TWRC_FAILURE
+    // ---------- ERROR -----------
+    // RC:TWRC_SUCCESS
+    // CC:TWCC_BADVALUE
+    // Error while trying to setup the file rename
+    // 1 fail
+    // Triplet:DG_CONTROL / DAT_USERINTERFACE / MSG_DISABLEDS
+    // RC:TWRC_SUCCESS
 
         rc = entry(DG_IMAGE, DAT_IMAGEFILEXFER, MSG_GET, NULL, pSource);
         if (rc == TWRC_XFERDONE) {
@@ -945,7 +976,7 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
 
             if(callback != NULL){
                 //多参数回调
-                callback.Call({ Napi::Number::New(env,rc),Napi::String::New(env,path + +"_" + std::to_string(idx) + ext) });
+                callback.Call({ Napi::Number::New(env,rc),Napi::String::New(env,path + "_" + std::to_string(idx) + ext) });
 
             }
 
@@ -963,7 +994,15 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
                 }
                 else {
                     idx = idx + 1;
-                    strcpy(fileXfer.FileName, (path +"_"+std::to_string(idx) + ext).c_str());
+                    // strcpy(fileXfer.FileName, (path +"_"+std::to_string(idx) + ext).c_str());
+                    std::string fullPath =  path + "_" + std::to_string(idx) + ext;
+                    if (fullPath.length() < sizeof(fileXfer.FileName)) {
+                        // 将拼接后的字符串复制到 TW_STR255
+                        strcpy(fileXfer.FileName, fullPath.c_str());
+                    } else {
+                        // 如果超过了最大长度，可以采取截断或其他处理方式
+                        std::cerr << "File path is too long to fit in TW_STR255." << std::endl;
+                    }
                 }
             } else {
                 std::cerr << "Failed to properly end the transfer" << std::endl;
@@ -1003,7 +1042,7 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
 }
 
 void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::Env env, Napi::Function callback,Napi::Array array) {
-    std::cout << "starting a TWSX_FILE transfer..." << std::endl;
+    // std::cout << "starting a TWSX_FILE transfer11111..." << std::endl;
     std::string ext = convertImageFileFormatToExt(fileFormat);
     std::cout << ext << std::endl;
 
@@ -1021,12 +1060,12 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
     TW_UINT16 rc = TWRC_SUCCESS;
     TW_SETUPFILEXFER fileXfer;
     memset(&fileXfer, 0, sizeof(fileXfer));
-    std::cout << "Test::" << fileXfer.Format << std::endl;
+    // std::cout << "Test::" << fileXfer.Format << std::endl;
     fileXfer.Format = fileFormat;
 
-    strcpy(fileXfer.FileName, (path+ +"_" + std::to_string(idx) + ext).c_str());
+    strcpy(fileXfer.FileName, (path + "_" + std::to_string(idx) + ext).c_str());
 
-    std::cout << "Test::" << "strcpy" << std::endl;
+    // std::cout << "Test::" << "strcpy" << std::endl;
    /*
     * 计算总量
     */
@@ -1065,7 +1104,7 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
 
             if(callback != NULL){
                 //多参数回调
-                callback.Call({ Napi::Number::New(env,rc),Napi::String::New(env,path + +"_" + std::to_string(idx) + ext) });
+                callback.Call({ Napi::Number::New(env,rc),Napi::String::New(env,path +"_" + std::to_string(idx) + ext) });
 
             }
 

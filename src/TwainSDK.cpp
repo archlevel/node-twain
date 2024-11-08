@@ -246,9 +246,10 @@ Napi::Value TwainSDK::getCapability(const Napi::CallbackInfo &info) {
         pTW_ENUMERATION pEnum = (pTW_ENUMERATION) session.lockMemory(cap.hContainer);
         Napi::Object enumResult = Napi::Object::New(env);
         Napi::Array list = Napi::Array::New(env, pEnum->NumItems);
-        std::cout << "get pEnum->ItemType= "<< pEnum->ItemType << std::endl;
+        std::cout << "get pEnum->ItemType= "<< pEnum->DefaultIndex << pEnum->ItemType << std::endl;
         for (TW_UINT32 index = 0; index < pEnum->NumItems; index++){
-            std::cout << "get index= " << index << ", pEnum->ItemType= " << pEnum->ItemType << "pEnum->ItemList" << pEnum->ItemList[index] << std::endl;
+            // std::cout << "get index= " << index << ", pEnum->ItemType= " << pEnum->ItemType << "，pEnum->ItemList" << pEnum->ItemList[] << std::endl;
+            printf("******* %d.\n", pEnum->ItemList[index]);
             switch (pEnum->ItemType) {
                 case TWTY_INT8:
                     list[index] = ((pTW_INT8)(&pEnum->ItemList))[index];
