@@ -1029,8 +1029,15 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
 
 void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::Env env, Napi::Function callback,Napi::Array array) {
     // std::cout << "starting a TWSX_FILE transfer11111..." << std::endl;
-    std::string ext = convertImageFileFormatToExt(fileFormat);
-    std::cout << ext << std::endl;
+    bool bPendingXfers = true;
+    TW_UINT16 rc = TWRC_SUCCESS;
+    TW_SETUPFILEXFER fileXfer;
+
+    /*
+     * 计算余量
+     */
+    long left = 0;
+    TW_PENDINGXFERS pendXfers;
 
     TW_UINT32 numItems = array.Length();
     if(numItems<1){
@@ -1042,33 +1049,33 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
 
     long idx = array.Get(arrayIdx).As<Napi::Number>().Int64Value();
 
-    bool bPendingXfers = true;
-    TW_UINT16 rc = TWRC_SUCCESS;
-    TW_SETUPFILEXFER fileXfer;
+    std::string ext = convertImageFileFormatToExt(fileFormat);
+    std::cout << ext << std::endl;
     memset(&fileXfer, 0, sizeof(fileXfer));
-    // std::cout << "Test::" << fileXfer.Format << std::endl;
-    fileXfer.Format = fileFormat;
 
-    strcpy(fileXfer.FileName, (path + "_" + std::to_string(idx) + ext).c_str());
+    // fileXfer.Format = fileFormat;
+    fileXfer.Format = 2;//TWFF_BMP;  TWFF_JP2
+    fileXfer.VRefNum = 0;
+    std::string fullPath = path + "_" + std::to_string(idx) + ext;
+    if (fullPath.length() < sizeof(fileXfer.FileName)) {
+        // std::cout << "Testfz::before " << fullPath.c_str() << std::endl;
+        // 将拼接后的字符串复制到 TW_STR255
+        strcpy(fileXfer.FileName, fullPath.c_str());
 
-    // std::cout << "Test::" << "strcpy" << std::endl;
-   /*
-    * 计算总量
-    */
-    long total = 0;
-    long left = 0;
-    TW_PENDINGXFERS pendXfers;
-    memset(&pendXfers, 0, sizeof(pendXfers));
-    std::cout << "Test::" << "memset" << std::endl;
-    rc = entry(DG_CONTROL, DAT_PENDINGXFERS, MSG_ENDXFER, (TW_MEMREF)&pendXfers, pSource);
-    if (rc == TWRC_SUCCESS) {
-        std::cout << "Test::" << "entry success" << std::endl;
-        total = pendXfers.Count;
-        left = total;
+        // std::cout << "Testfz::after " << fileXfer.FileName << std::endl;
+    } else {
+        // 如果超过了最大长度，可以采取截断或其他处理方式
+        std::cerr << "File path is too long to fit in TW_STR255." << std::endl;
     }
-    else {
-        std::cout << "Test::" << std::to_string(rc) << std::endl;
-    }
+
+    // strcpy(fileXfer.FileName, (path+ +"_" + std::to_string(idx) + ext).c_str());
+    std::cout << "Test::afterfz " << fileXfer.Format << std::endl;
+
+    std::cout << "Test::after " << fileXfer.Format << std::endl;
+
+    // strcpy(fileXfer.FileName, (path+ +"_" + std::to_string(idx) + ext).c_str());
+
+    std::cout << "Test::" << "strcpy" << std::endl;
 
     while (bPendingXfers) {
 
@@ -1091,7 +1098,6 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
             if(callback != NULL){
                 //多参数回调
                 callback.Call({ Napi::Number::New(env,rc),Napi::String::New(env,path +"_" + std::to_string(idx) + ext) });
-
             }
 
             memset(&pendXfers, 0, sizeof(pendXfers));
@@ -1112,7 +1118,16 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
                         return;
                     }
                     idx = array.Get(arrayIdx).As<Napi::Number>().Int64Value();
-                    strcpy(fileXfer.FileName, (total, left, path +"_"+std::to_string(idx) + ext).c_str());
+
+                    // strcpy(fileXfer.FileName, (path +"_"+std::to_string(idx) + ext).c_str());
+                    std::string fullPath =  path + "_" + std::to_string(idx) + ext;
+                    if (fullPath.length() < sizeof(fileXfer.FileName)) {
+                        // 将拼接后的字符串复制到 TW_STR255
+                        strcpy(fileXfer.FileName, fullPath.c_str());
+                    } else {
+                        // 如果超过了最大长度，可以采取截断或其他处理方式
+                        std::cerr << "File path is too long to fit in TW_STR255." << std::endl;
+                    }
                 }
             } else {
                 std::cerr << "Failed to properly end the transfer" << std::endl;
