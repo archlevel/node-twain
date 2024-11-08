@@ -1136,7 +1136,6 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
         }
         else if (rc == TWRC_CANCEL) {
             std::cerr << "Cancel to transfer image" << std::endl;
-            std::cerr << "Cancel total" << std::to_string(total) << std::endl;
             std::cerr << "Cancel left" << std::to_string(left) << std::endl;
             std::cerr << "Cancel reason" << "cancel" << std::endl;
             if(callback != NULL){
@@ -1154,7 +1153,6 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
                 || rc == TWRC_DATANOTAVAILABLE
                 || rc == TWRC_SCANNERLOCKED) {
             std::cerr << "Failed to transfer image" << std::endl;
-            std::cerr << "Failed total"<< std::to_string(total) << std::endl;
             std::cerr << "Failed left" << std::to_string(left) << std::endl;
             std::cerr << "Failed reason" << "fail" << std::endl;
             if(callback != NULL){
