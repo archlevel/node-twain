@@ -921,7 +921,7 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
     memset(&fileXfer, 0, sizeof(fileXfer));
     std::cout << "Test::after " << fileXfer.Format << std::endl;
 
-    strcpy(fileXfer.FileName, (path+ +"_" + std::to_string(idx) + ext).c_str());
+    strcpy(fileXfer.FileName, (path +"_" + std::to_string(idx) + ext).c_str());
 
     std::cout << "Test::" << "strcpy" << std::endl;
 
@@ -945,7 +945,7 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
 
             if(callback != NULL){
                 //多参数回调
-                callback.Call({ Napi::Number::New(env,rc),Napi::String::New(env,path + +"_" + std::to_string(idx) + ext) });
+                callback.Call({ Napi::Number::New(env,rc),Napi::String::New(env,path +"_" + std::to_string(idx) + ext) });
 
             }
 
@@ -1065,7 +1065,7 @@ void TwainSession::transferFile(TW_UINT16 fileFormat, std::string path, Napi::En
 
             if(callback != NULL){
                 //多参数回调
-                callback.Call({ Napi::Number::New(env,rc),Napi::String::New(env,path + +"_" + std::to_string(idx) + ext) });
+                callback.Call({ Napi::Number::New(env,rc),Napi::String::New(env,path +"_" + std::to_string(idx) + ext) });
 
             }
 
